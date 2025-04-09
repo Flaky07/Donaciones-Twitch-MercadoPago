@@ -3,8 +3,11 @@ import requests
 import json
 from datetime import datetime
 import os
+from flask_cors import CORS
+
 
 app = Flask(__name__)
+CORS(app, origins=["https://donaciones-twitch-mercado-pago.vercel.app"])
 
 ACCESS_TOKEN = "APP_USR-.....-75432"  # Reemplazar con su Acces Token de MercadoPago
 

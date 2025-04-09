@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Twitch Donacion - Mariscal</title>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/styles.css') }}">
+  <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body>
   <div class="container">
@@ -114,7 +114,7 @@
       submitButton.disabled = true;
       successDiv.textContent = "";
 
-      fetch("https://TU_BACKEND_RENDER_URL.onrender.com/crear-donacion", {
+      fetch("https://backend-donaciones.onrender.com", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ monto, mensaje })
