@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitch Donacion - Mariscal</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="donation-header">
+            <!-- Editar con su nombre -->
+            <h1>Mariscal Infinito</h1>
+            <p>💜 Gracias por el apoyo 💜</p>
+        </div>
+    
+        <div class="content-wrapper">
+            <div class="donation-card">
+                <div class="card-header">
+                    <h2>Realizar Donacion</h2>
+                </div>
+                
+                <div class="card-body">
+                    <form action="/crear-donacion" method="POST" id="donationForm">
+                        <div class="form-group">
+                            <label for="monto">Monto (ARS)</label>
+                            <div class="input-wrapper">
+                                <span class="currency-symbol">$</span>
+                                <input type="number" id="monto" name="monto" required min="10" placeholder="10">
+                            </div>
+                            <small>Ingresa el monto</small>
+                            <div class="error-message" id="amountError"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="mensaje">Mensaje</label>
+                            <input type="text" id="mensaje" name="mensaje" required maxlength="100" placeholder="mensaje...">
+                            <small>El mensaje sera mostrado en el stream</small>
+                        </div>
+                        
+                        <button type="submit" id="submitButton">
+                            <span class="button-content">
+                                <svg class="heart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                </svg>
+                                Donar
+                            </span>
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="card-footer">
+                    <p>Powered By: <a href="https://github.com/Flaky07">Flaky</a></p>
+                </div>
+            </div>
+            
+            <!--            Twitch embebido
+            Editar linea 75 añadiendo el nombre de su canal -->
+
+            <div class="twitch-floating">
+                <div class="twitch-close-wrapper">
+                    <button class="close-twitch" onclick="toggleTwitch()">✖</button>
+                </div>
+                <div id="twitch-embed"></div>
+              </div>
+              <button class="show-twitch" onclick="toggleTwitch()" style="display: none;">
+                📺 Mostrar Stream
+              </button>
+              <script src="https://embed.twitch.tv/embed/v1.js"></script>
+              <script type="text/javascript">
+                new Twitch.Embed("twitch-embed", {
+                  width: 360,
+                  height: 210,
+                  layout: "video",
+                  autoplay: true,
+                  channel: "elmariscal_infinito",
+                  parent: ["localhost"]
+                });
+              </script>
+              <script>
+                function toggleTwitch() {
+                  const twitchBox = document.querySelector('.twitch-floating');
+                  const showBtn = document.querySelector('.show-twitch');
+                  
+                  if (twitchBox.style.display === 'none') {
+                    twitchBox.style.display = 'block';
+                    showBtn.style.display = 'none';
+                  } else {
+                    twitchBox.style.display = 'none';
+                    showBtn.style.display = 'block';
+                  }
+                }
+              </script>
+    </div>
+</body>
+</html>
