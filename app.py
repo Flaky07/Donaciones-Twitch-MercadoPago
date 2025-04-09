@@ -50,7 +50,6 @@ def crear_donacion():
             init_point = res.json()["init_point"]
             preference_id = res.json()["id"]
 
-            # Guardar mensaje temporalmente
             pendientes = {}
             if os.path.exists("pendientes.json"):
                 with open("pendientes.json", "r", encoding="utf-8") as f:
@@ -81,7 +80,6 @@ def resultado():
     if not preference_id:
         return "<h2>❌ No se encontró el preference_id</h2>"
 
-    # Cargar mensaje/monto guardado previamente
     mensaje = "(sin mensaje)"
     monto = 0
     fecha = ""
@@ -101,7 +99,6 @@ def resultado():
             except json.JSONDecodeError:
                 pendientes = {}
 
-    # Buscar pagos reales con ese mensaje
     res = requests.get(
         "https://api.mercadopago.com/v1/payments/search",
         headers={"Authorization": f"Bearer {ACCESS_TOKEN}"},
@@ -116,7 +113,6 @@ def resultado():
                 email = pago.get("payer", {}).get("email", "desconocido")
                 fecha_pago = pago.get("date_approved", "fecha no disponible")
 
-                # 🔸 Guardar en donaciones.json
                 donaciones = []
                 if os.path.exists(donaciones_file):
                     with open(donaciones_file, "r", encoding="utf-8") as f:
