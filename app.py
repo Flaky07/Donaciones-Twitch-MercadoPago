@@ -79,15 +79,59 @@ def crear_donacion():
 
 @app.route("/ultimo-mensaje")
 def ultimo_mensaje():
-    if os.path.exists("pendientes.json"):
-        with open("pendientes.json", "r", encoding="utf-8") as f:
-            try:
-                pendientes = json.load(f)
-                valores = list(pendientes.values())
-                if valores:
-                    return valores[-1]
-            except json.JSONDecodeError:
-                pass
+    if not os.path.exists("pendientes.json"):
+        return {}
+
+    with open("pendientes.json", "r", encoding="utf-8") as f:
+        try:
+            pendientes = json.load(f)
+        except json.JSONDecodeError:
+            pendientes = {}
+
+    for preference_id, data in list(pendientes.items()):
+        mensaje = data.get("mensaje", "")
+        monto = data.get("monto", 0)
+
+        res = requests.get(
+            "https://api.mercadopago.com/v1/payments/search",
+            headers={"Authorization": f"Bearer {ACCESS_TOKEN}"},
+            params={"external_reference": mensaje}
+        )
+
+        if res.status_code == 200:
+            pagos = res.json().get("results", [])
+            for pago in pagos:
+                if pago.get("status") == "approved":
+                    email = pago.get("payer", {}).get("email", "desconocido")
+                    fecha_pago = pago.get("date_approved", "fecha no disponible")
+
+                    # Guardar en donaciones.json
+                    donaciones = []
+                    if os.path.exists("donaciones.json"):
+                        with open("donaciones.json", "r", encoding="utf-8") as df:
+                            try:
+                                donaciones = json.load(df)
+                            except json.JSONDecodeError:
+                                pass
+
+                    nueva_donacion = {
+                        "fecha": fecha_pago,
+                        "monto": monto,
+                        "email": email,
+                        "mensaje": mensaje
+                    }
+
+                    donaciones.append(nueva_donacion)
+                    with open("donaciones.json", "w", encoding="utf-8") as df:
+                        json.dump(donaciones, df, indent=4, ensure_ascii=False)
+
+                    # Eliminamos de pendientes
+                    pendientes.pop(preference_id)
+                    with open("pendientes.json", "w", encoding="utf-8") as pf:
+                        json.dump(pendientes, pf, indent=4, ensure_ascii=False)
+
+                    return nueva_donacion  # Solo mostramos el primero aprobado
+
     return {}
 
 @app.route("/overlay")
