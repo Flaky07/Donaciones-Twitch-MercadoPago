@@ -1,13 +1,6 @@
 {
-    "rewrites": [
-      {
-        "source": "/config.js",
-        "destination": "/config.js"
-      }
-    ],
-    "env": {
-      "TWITCH_CHANNEL": "@TWITCH_CHANNEL",
-      "BACKEND_URL": "@BACKEND_URL"
-    }
+  "env": {
+    "TWITCH_CHANNEL": "@TWITCH_CHANNEL",
+    "BACKEND_URL": "@BACKEND_URL"
   }
-  
+}
