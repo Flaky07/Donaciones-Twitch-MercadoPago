@@ -1,3 +1,8 @@
+¡Genial, Franco! Te dejo el `README.md` actualizado para reflejar los **últimos cambios con `config.js`**, removiendo la necesidad de pasar datos por la URL y haciendo aún más simple la personalización.
+
+---
+
+```markdown
 # 💜 Sistema de Donaciones para Streamers (Twitch + MercadoPago)
 
 Este proyecto permite a cualquier streamer aceptar donaciones mediante **MercadoPago** y mostrar los mensajes en pantalla a través de **OBS**. Además, incluye un stream embebido de Twitch que se puede mostrar/minimizar dinámicamente.
@@ -12,7 +17,7 @@ Este proyecto permite a cualquier streamer aceptar donaciones mediante **Mercado
 - ✔️ Overlay personalizable
 - ✔️ Backend listo para deploy en Render
 - ✔️ Frontend listo para deploy en Vercel
-- ✔️ Sistema reutilizable con parámetros dinámicos
+- ✔️ Sistema reutilizable con configuración por archivo
 
 ---
 
@@ -24,6 +29,7 @@ Renombrá el archivo `.env.example` a `.env` y completá:
 
 ```env
 MP_ACCESS_TOKEN=APP_USR-XXXXXXXXXXXXXXXX
+VERCEL_APP=https://tusitio.vercel.app
 ```
 
 > El token lo obtenés desde: https://www.mercadopago.com.ar/developers/panel/app
@@ -39,6 +45,7 @@ MP_ACCESS_TOKEN=APP_USR-XXXXXXXXXXXXXXXX
 ├── .env.example            # Variables de entorno de ejemplo
 ├── public/                 # Archivos del frontend (para Vercel)
 │   ├── index.html
+│   ├── config.js           # ✅ configuración editable por cada streamer
 │   └── static/styles/
 │       └── styles.css
 ```
@@ -58,10 +65,11 @@ MP_ACCESS_TOKEN=APP_USR-XXXXXXXXXXXXXXXX
 gunicorn app:app
 ```
 
-5. Agregá una variable de entorno:
+5. Agregá variables de entorno:
 
 ```
 MP_ACCESS_TOKEN=TU_TOKEN_DE_MERCADOPAGO
+VERCEL_APP=https://tudominio.vercel.app
 ```
 
 6. Deploy 🚀
@@ -82,6 +90,20 @@ https://donaciones-twitch.vercel.app
 
 ---
 
+## 🧰 Configuración del Frontend
+
+El archivo `config.js` contiene las variables editables del sitio. Modificalo así:
+
+```js
+// config.js
+const TWITCH_CHANNEL = "tucanal_de_twitch";
+const BACKEND_URL = "https://tu-backend.onrender.com";
+```
+
+> Esto permite personalizar sin tocar `index.html`, ideal para compartir el proyecto.
+
+---
+
 ## 🎥 Twitch + OBS
 
 Para mostrar los mensajes de donaciones en pantalla:
@@ -98,21 +120,14 @@ https://TU_BACKEND_RENDER.onrender.com/overlay
 
 ---
 
-## 💡 Personalización
-
-### Cambiar canal de Twitch sin editar código
-
-En el `index.html`, el canal se puede definir con un parámetro URL:
-
-```
-https://tudominio.vercel.app/?canal=nombre_de_tu_canal
-```
-
----
-
 ## 📩 Créditos
 
 Creado por [Flaky](https://github.com/Flaky07)  
 Inspirado por streamers que 💜 su comunidad.
 
 ---
+
+## 📃 Licencia
+
+MIT — libre de uso y modificación.
+```
