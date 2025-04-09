@@ -13,7 +13,7 @@ ACCESS_TOKEN = "APP_USR-.....-75432"  # Reemplazar con su Acces Token de Mercado
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return "Backend Online"
 
 @app.route("/crear-donacion", methods=["POST"])
 def crear_donacion():
