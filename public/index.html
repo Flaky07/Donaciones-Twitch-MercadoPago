@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Twitch Donacion - Mariscal</title>
+  <title>Twitch Donación - Mariscal</title>
   <link rel="stylesheet" href="../static/styles/styles.css">
 </head>
 <body>
   <div class="container">
     <div class="donation-header">
-      <h1>Mariscal Infinito</h1>
+      <h1>Donaciones MercadoPago</h1>
       <p>💜 Gracias por el apoyo 💜</p>
     </div>
 
     <div class="content-wrapper">
       <div class="donation-card">
         <div class="card-header">
-          <h2>Realizar Donacion</h2>
+          <h2>Realizar Donación</h2>
         </div>
 
         <div class="card-body">
@@ -71,16 +71,20 @@
     </div>
   </div>
 
-  <!-- Twitch Embed -->
+  <!-- Twitch Embed dinámico -->
+  <script>
+    const currentHost = window.location.hostname;
+    const urlParams = new URLSearchParams(window.location.search);
+    const TWITCH_CHANNEL = urlParams.get("canal") || "elmariscal_infinito";
+  </script>
   <script src="https://embed.twitch.tv/embed/v1.js"></script>
   <script type="text/javascript">
-    const currentHost = window.location.hostname;
     new Twitch.Embed("twitch-embed", {
       width: 360,
       height: 210,
       layout: "video",
       autoplay: true,
-      channel: "elmariscal_infinito",
+      channel: TWITCH_CHANNEL,
       parent: [currentHost]
     });
   </script>
@@ -124,14 +128,13 @@
         return res.json();
       })
       .then(data => {
-        // Redirigir directamente al link de pago de MercadoPago
         if (data.url) {
           window.location.href = data.url;
         } else {
           successDiv.textContent = data.mensaje || "¡Gracias por tu donación!";
         }
       })
-      .catch(err => {
+      .catch(() => {
         successDiv.textContent = "Ocurrió un error. Intenta nuevamente.";
       })
       .finally(() => {

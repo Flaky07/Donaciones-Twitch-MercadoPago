@@ -26,7 +26,7 @@ Renombrá el archivo `.env.example` a `.env` y completá:
 MP_ACCESS_TOKEN=APP_USR-XXXXXXXXXXXXXXXX
 ```
 
-> El token lo obtenés desde: https://www.mercadopago.com.ar/developers/panel/credentials
+> El token lo obtenés desde: https://www.mercadopago.com.ar/developers/panel/app
 
 ---
 
