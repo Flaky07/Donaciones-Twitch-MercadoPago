@@ -5,10 +5,12 @@ import json
 from datetime import datetime
 import os
 
-app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "https://donaciones-twitch-mercado-pago.vercel.app"}})
 
-ACCESS_TOKEN = os.getenv("MP_ACCESS_TOKEN")
+ACCESS_TOKEN = os.getenv("MP_ACCESS_TOKEN") # EDITAR VARIABLE DE ENTORNO EN RENDER.COM
+VERCEL_APP = os.getenv("VERCEL_APP") # EDITAR VARIABLE DE ENTORNO EN RENDER.COM
+
+app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": VERCEL_APP}})
 
 @app.route("/")
 def index():
@@ -33,9 +35,9 @@ def crear_donacion():
             ],
             "auto_return": "approved",
             "back_urls": {
-                "success": "https://donaciones-twitch-mercado-pago.vercel.app",
-                "failure": "https://donaciones-twitch-mercado-pago.vercel.app",
-                "pending": "https://donaciones-twitch-mercado-pago.vercel.app"
+                "success": VERCEL_APP,
+                "failure": VERCEL_APP,
+                "pending": VERCEL_APP
             },
             "external_reference": mensaje
         }
@@ -105,7 +107,6 @@ def ultimo_mensaje():
                     email = pago.get("payer", {}).get("email", "desconocido")
                     fecha_pago = pago.get("date_approved", "fecha no disponible")
 
-                    # Guardar en donaciones.json
                     donaciones = []
                     if os.path.exists("donaciones.json"):
                         with open("donaciones.json", "r", encoding="utf-8") as df:
@@ -125,12 +126,11 @@ def ultimo_mensaje():
                     with open("donaciones.json", "w", encoding="utf-8") as df:
                         json.dump(donaciones, df, indent=4, ensure_ascii=False)
 
-                    # Eliminamos de pendientes
                     pendientes.pop(preference_id)
                     with open("pendientes.json", "w", encoding="utf-8") as pf:
                         json.dump(pendientes, pf, indent=4, ensure_ascii=False)
 
-                    return nueva_donacion  # Solo mostramos el primero aprobado
+                    return nueva_donacion 
 
     return {}
 

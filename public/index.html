@@ -128,7 +128,6 @@
         return res.json();
       })
       .then(data => {
-        // Redirigir directamente al link de pago de MercadoPago
         if (data.url) {
           window.location.href = data.url;
         } else {
