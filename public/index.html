@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Twitch Donacion - Mariscal</title>
   <link rel="stylesheet" href="../static/styles/styles.css">
+  <script src="config.js"></script>
 </head>
 <body>
   <div class="container">
@@ -77,7 +78,6 @@
   
   <script src="https://embed.twitch.tv/embed/v1.js"></script>
   <script type="text/javascript">
-    const TWITCH_CHANNEL = "elmariscal_infinito";
     const currentHost = window.location.hostname;
     new Twitch.Embed("twitch-embed", {
       width: 360,
@@ -118,7 +118,7 @@
       submitButton.disabled = true;
       successDiv.textContent = "";
 
-      fetch("https://backend-donaciones.onrender.com/crear-donacion", {
+      fetch(`${BACKEND_URL}/crear-donacion`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ monto, mensaje })
