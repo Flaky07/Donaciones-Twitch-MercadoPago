@@ -1,127 +1,135 @@
-# 💜 Sistema de Donaciones para Streamers (Twitch + MercadoPago)
+# 💜 Sistema de Donaciones para Streamers (Twitch + MercadoPago + OBS)
 
-Este proyecto permite a cualquier streamer aceptar donaciones mediante **MercadoPago** y mostrar los mensajes en pantalla a través de **OBS**. Además, incluye un stream embebido de Twitch que se puede mostrar/minimizar dinámicamente.
+Este proyecto permite a cualquier **streamer** aceptar **donaciones a través de MercadoPago**, visualizar los mensajes en vivo con **OBS**, e integrar su canal de **Twitch embebido**. Totalmente reutilizable y desplegable con solo editar variables de entorno.
 
 ---
 
 ## 🚀 Funcionalidades
 
-- ✔️ Donaciones vía MercadoPago (checkout)
-- ✔️ Visualización del mensaje del donante en OBS
+- ✔️ Checkout de MercadoPago
+- ✔️ Mensaje en pantalla vía OBS
 - ✔️ Canal de Twitch embebido
-- ✔️ Overlay personalizable
-- ✔️ Backend listo para deploy en Render
-- ✔️ Frontend listo para deploy en Vercel
-- ✔️ Sistema reutilizable con configuración por archivo
-
----
-
-## ⚙️ Configuración
-
-### 🔐 Variables de entorno (solo backend)
-
-Renombrá el archivo `.env.example` a `.env` y completá:
-
-```env
-MP_ACCESS_TOKEN=APP_USR-XXXXXXXXXXXXXXXX
-VERCEL_APP=https://tusitio.vercel.app
-```
-
-> El token lo obtenés desde: https://www.mercadopago.com.ar/developers/panel/app
+- ✔️ Frontend desplegable en Vercel
+- ✔️ Backend en Render
+- ✔️ Parametrizable por variables de entorno
+- ✔️ 100% reutilizable para cualquier streamer
 
 ---
 
 ## 🧩 Estructura del proyecto
 
 ```
-📁 twitch-donations/
-├── app.py                  # Backend Flask
-├── requirements.txt        # Dependencias para Render
-├── .env.example            # Variables de entorno de ejemplo
-├── public/                 # Archivos del frontend (para Vercel)
+📦 twitch-donations
+├── 📁 api/                     # Serverless function para exponer ENV en el frontend
+│   └── config.js
+├── 📁 public/                  # Frontend estático para Vercel
 │   ├── index.html
-│   ├── config.js           # ✅ configuración editable por cada streamer
+│   ├── vercel.json            # Reescribe /config.js a /api/config.js
 │   └── static/styles/
 │       └── styles.css
+├── app.py                     # Backend Flask para Render
+├── .env.example               # Variables para Render
+├── requirements.txt           # Dependencias de Python
+└── README.md
 ```
 
 ---
 
-## ☁️ Deploy
+## ⚙️ Configuración
 
-### 🔸 Backend: Render
+### 🔐 Variables de entorno
 
-1. Subí este repositorio a GitHub
-2. Creá un nuevo servicio en [https://render.com](https://render.com)
-3. Elegí "Web Service"
-4. En **Start Command**, poné:
+#### 📦 Backend (Render)
+
+Renombrar `.env.example` a `.env` y completar:
+
+```env
+MP_ACCESS_TOKEN=APP_USR-XXXXXXXXXXXXXXXX
+VERCEL_APP=https://TU_FRONTEND.vercel.app
+```
+
+> Este archivo **no se sube** a GitHub. En producción, se agregan directamente desde Render (Settings > Environment).
+
+#### 🌐 Frontend (Vercel)
+
+En [https://vercel.com](https://vercel.com):
+
+1. Ir al proyecto > `Settings > Environment Variables`
+2. Agregar:
+
+```
+TWITCH_CHANNEL=nombre_de_tu_canal
+BACKEND_URL=https://backend-donaciones.onrender.com
+
+![Vercel Variables](https://drive.google.com/uc?id=1rAvI5D-GB014HHL0twNs1NYdPzohgCwn)
+
+```
+
+---
+
+## ☁️ Deploy en producción
+
+### 🔹 Frontend en Vercel
+
+1. Hacé un **fork** o cloná este repo
+2. Subilo a tu GitHub
+3. En Vercel, seleccioná **"Import Project"**
+4. En **Project Settings**:
+   - Root Directory: `public/`
+5. Definí las variables de entorno (como se explicó arriba)
+
+> Tu frontend quedará en algo como: `https://donaciones-twitch.vercel.app`
+
+---
+
+### 🔸 Backend en Render
+
+1. Ingresá a [https://render.com](https://render.com)
+2. Nuevo servicio tipo `Web Service`
+3. Conectá el repositorio
+4. Start Command:
 
 ```bash
 gunicorn app:app
 ```
 
-5. Agregá variables de entorno:
+5. Agregá las variables de entorno:
 
 ```
-MP_ACCESS_TOKEN=TU_TOKEN_DE_MERCADOPAGO
-VERCEL_APP=https://tudominio.vercel.app
+MP_ACCESS_TOKEN=APP_USR-xxxx
+VERCEL_APP=https://donaciones-twitch.vercel.app
+
+![Render Variables](https://drive.google.com/uc?id=18VnDQ2gHRHnyYXSxa_PwaC-hZlA271O8)
+
 ```
 
-6. Deploy 🚀
+
 
 ---
 
-### 🔹 Frontend: Vercel
+## 🎯 Uso en OBS
 
-1. En [https://vercel.com](https://vercel.com), creá un nuevo proyecto
-2. Seleccioná el mismo repositorio
-3. En **Project Settings**, configurá:
-   - **Root Directory**: `public/`
+Para mostrar los mensajes en pantalla:
 
-Listo, el frontend quedará online en algo como:  
-```
-https://donaciones-twitch.vercel.app
-```
-
----
-
-## 🧰 Configuración del Frontend
-
-El archivo `config.js` contiene las variables editables del sitio. Modificalo así:
-
-```js
-// config.js
-const TWITCH_CHANNEL = "tucanal_de_twitch";
-const BACKEND_URL = "https://tu-backend.onrender.com";
-```
-
-> Esto permite personalizar sin tocar `index.html`, ideal para compartir el proyecto.
-
----
-
-## 🎥 Twitch + OBS
-
-Para mostrar los mensajes de donaciones en pantalla:
-
-1. Abrí OBS
-2. Agregá una fuente de navegador
-3. Pegá la URL:
+1. Abrí **OBS Studio**
+2. Agregá una nueva fuente de navegador
+3. Borrar el CSS Default que añade OBS
+4. Pegá esta URL:
 
 ```
 https://TU_BACKEND_RENDER.onrender.com/overlay
 ```
 
-> Esto mostrará los mensajes en vivo cuando alguien done.
+> Los mensajes de donación aparecerán automáticamente en pantalla.
 
----
 
-## 📩 Créditos
+## 🙌 Créditos
 
 Creado por [Flaky](https://github.com/Flaky07)  
 Inspirado por streamers que 💜 su comunidad.
 
 ---
 
-## 📃 Licencia
+## 📝 Licencia
 
-MIT — libre de uso y modificación.
+MIT - libre para usar, modificar y compartir.
