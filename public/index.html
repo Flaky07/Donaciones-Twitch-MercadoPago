@@ -114,7 +114,7 @@
       submitButton.disabled = true;
       successDiv.textContent = "";
 
-      fetch("https://backend-donaciones.onrender.com", {
+      fetch("https://backend-donaciones.onrender.com/crear-donacion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ monto, mensaje })
