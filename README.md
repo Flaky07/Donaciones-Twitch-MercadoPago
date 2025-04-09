@@ -116,8 +116,3 @@ Creado por [Flaky](https://github.com/Flaky07)
 Inspirado por streamers que 💜 su comunidad.
 
 ---
-
-## 📃 Licencia
-
-MIT — libre de uso y modificación.
-```
