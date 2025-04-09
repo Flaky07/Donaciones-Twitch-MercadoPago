@@ -1,2 +1,0 @@
-const TWITCH_CHANNEL = window.ENV?.TWITCH_CHANNEL || "default_channel"; // INDICAR NOMBRE DEL CANAL
-const BACKEND_URL = window.ENV?.BACKEND_URL || "https://backend-donaciones.onrender.com"; // URL DE LA API BACKEND EN RENDER.COM

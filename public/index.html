@@ -5,12 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Twitch Donacion - Mariscal</title>
   <link rel="stylesheet" href="../static/styles/styles.css">
-  <script>
-    window.ENV = {
-      TWITCH_CHANNEL: "%TWITCH_CHANNEL%",
-      BACKEND_URL: "%BACKEND_URL%"
-    };
-  </script>
+  <script src="../api/config.js"></script>
 </head>
 <body>
   <div class="container">
@@ -89,7 +84,7 @@
       height: 210,
       layout: "video",
       autoplay: true,
-      channel: TWITCH_CHANNEL,
+      channel: window.ENV.TWITCH_CHANNEL,
       parent: [currentHost]
     });
   </script>
@@ -123,7 +118,7 @@
       submitButton.disabled = true;
       successDiv.textContent = "";
 
-      fetch(`${BACKEND_URL}/crear-donacion`, {
+      fetch(`${window.ENV.BACKEND_URL}/crear-donacion`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ monto, mensaje })
