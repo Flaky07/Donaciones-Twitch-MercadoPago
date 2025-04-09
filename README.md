@@ -60,10 +60,9 @@ En [https://vercel.com](https://vercel.com):
 ```
 TWITCH_CHANNEL=nombre_de_tu_canal
 BACKEND_URL=https://backend-donaciones.onrender.com
+```
 
 ![Vercel Variables](https://drive.google.com/uc?id=1rAvI5D-GB014HHL0twNs1NYdPzohgCwn)
-
-```
 
 ---
 
@@ -98,10 +97,8 @@ gunicorn app:app
 ```
 MP_ACCESS_TOKEN=APP_USR-xxxx
 VERCEL_APP=https://donaciones-twitch.vercel.app
-
-![Render Variables](https://drive.google.com/uc?id=18VnDQ2gHRHnyYXSxa_PwaC-hZlA271O8)
-
 ```
+![Render Variables](https://drive.google.com/uc?id=18VnDQ2gHRHnyYXSxa_PwaC-hZlA271O8)
 
 
 
