@@ -8,7 +8,7 @@ import os
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "https://donaciones-twitch-mercado-pago.vercel.app"}})
 
-ACCESS_TOKEN = "APP_USR-1882181410346504-040522-a1d392d93f2fdcfa3e2b6e87fa57ce50-290664751"  # Reemplazar con tu Access Token real de MercadoPago
+ACCESS_TOKEN = os.getenv("MP_ACCESS_TOKEN")
 
 @app.route("/")
 def index():
