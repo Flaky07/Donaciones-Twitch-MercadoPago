@@ -119,20 +119,24 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ monto, mensaje })
       })
-        .then(res => {
-          if (!res.ok) throw new Error("Error al enviar la donación");
-          return res.json();
-        })
-        .then(data => {
+      .then(res => {
+        if (!res.ok) throw new Error("Error al enviar la donación");
+        return res.json();
+      })
+      .then(data => {
+        // Redirigir directamente al link de pago de MercadoPago
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
           successDiv.textContent = data.mensaje || "¡Gracias por tu donación!";
-          document.getElementById("donationForm").reset();
-        })
-        .catch(err => {
-          successDiv.textContent = "Ocurrió un error. Intenta nuevamente.";
-        })
-        .finally(() => {
-          submitButton.disabled = false;
-        });
+        }
+      })
+      .catch(err => {
+        successDiv.textContent = "Ocurrió un error. Intenta nuevamente.";
+      })
+      .finally(() => {
+        submitButton.disabled = false;
+      });
     });
   </script>
 </body>
