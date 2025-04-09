@@ -1,8 +1,3 @@
-¡Genial, Franco! Te dejo el `README.md` actualizado para reflejar los **últimos cambios con `config.js`**, removiendo la necesidad de pasar datos por la URL y haciendo aún más simple la personalización.
-
----
-
-```markdown
 # 💜 Sistema de Donaciones para Streamers (Twitch + MercadoPago)
 
 Este proyecto permite a cualquier streamer aceptar donaciones mediante **MercadoPago** y mostrar los mensajes en pantalla a través de **OBS**. Además, incluye un stream embebido de Twitch que se puede mostrar/minimizar dinámicamente.
@@ -130,4 +125,3 @@ Inspirado por streamers que 💜 su comunidad.
 ## 📃 Licencia
 
 MIT — libre de uso y modificación.
-```
