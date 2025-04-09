@@ -121,7 +121,3 @@ Inspirado por streamers que 💜 su comunidad.
 
 MIT — libre de uso y modificación.
 ```
-
----
-
-¿Querés que lo subamos juntos a un repositorio GitHub? También puedo generarte el `.env.example` y agregar `pendientes.json` y `donaciones.json` al `.gitignore`. ¿Te armo eso también?
