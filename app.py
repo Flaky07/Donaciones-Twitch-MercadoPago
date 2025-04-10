@@ -152,7 +152,7 @@ def overlay():
       --primary-color: #6366f1;
       --secondary-color: #4f46e5;
       --text-color: #f8fafc;
-      --bg-color: rgba(15, 23, 42, 0.85);
+      --bg-color: rgba(15, 23, 42, 0.96);
       --border-color: rgba(99, 102, 241, 0.3);
     }
     
