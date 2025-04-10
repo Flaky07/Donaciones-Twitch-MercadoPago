@@ -309,9 +309,20 @@ def overlay():
     """
 
 
+@app.route("/api/donaciones")
+def api_donaciones():
+    if os.path.exists("donaciones.json"):
+        with open("donaciones.json", "r", encoding="utf-8") as f:
+            try:
+                donaciones = json.load(f)
+            except json.JSONDecodeError:
+                donaciones = []
+    else:
+        donaciones = []
+    return jsonify(donaciones[::-1]) 
+
 @app.route("/historial")
 def historial():
-
     if os.path.exists("donaciones.json"):
         with open("donaciones.json", "r", encoding="utf-8") as f:
             try:
@@ -323,10 +334,10 @@ def historial():
 
     filas = "\n".join(f"""
         <tr>
-            <td data-label='Fecha'>{d['fecha']}</td>
-            <td data-label='Usuario'>{d.get('usuario', 'anónimo')}</td>
-            <td data-label='Mensaje'>{d['mensaje']}</td>
-            <td data-label='Monto' class='amount'>${d['monto']}</td>
+            <td>{d['fecha']}</td>
+            <td>{d.get('usuario', 'anónimo')}</td>
+            <td>{d['mensaje']}</td>
+            <td class='amount'>${d['monto']}</td>
         </tr>
     """ for d in reversed(donaciones))
 
@@ -335,16 +346,14 @@ def historial():
     promedio = total / cantidad if cantidad > 0 else 0
 
     return f"""<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Donation History</title>
+<title>Historial de Donaciones</title>
 <style>
     * {{
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+        margin: 0; padding: 0; box-sizing: border-box;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }}
     body {{
@@ -353,10 +362,8 @@ def historial():
         line-height: 1.6;
     }}
     .container {{
-        width: 90%;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
+        width: 90%; max-width: 1200px;
+        margin: 0 auto; padding: 20px;
     }}
     header {{
         background-color: #4CAF50;
@@ -367,14 +374,8 @@ def historial():
         border-radius: 0 0 10px 10px;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }}
-    h1 {{
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
-    }}
-    .subtitle {{
-        font-size: 1.2rem;
-        opacity: 0.9;
-    }}
+    h1 {{ font-size: 2.5rem; margin-bottom: 0.5rem; }}
+    .subtitle {{ font-size: 1.2rem; opacity: 0.9; }}
     .card {{
         background-color: white;
         border-radius: 10px;
@@ -392,8 +393,7 @@ def historial():
         width: 100%;
         border-collapse: collapse;
     }}
-    .donation-table th, 
-    .donation-table td {{
+    .donation-table th, .donation-table td {{
         padding: 12px 15px;
         text-align: left;
         border-bottom: 1px solid #f0f0f0;
@@ -402,9 +402,7 @@ def historial():
         background-color: #f9f9f9;
         font-weight: 600;
     }}
-    .donation-table tr:hover {{
-        background-color: #f5f5f5;
-    }}
+    .donation-table tr:hover {{ background-color: #f5f5f5; }}
     .amount {{
         font-weight: 600;
         color: #4CAF50;
@@ -437,9 +435,7 @@ def historial():
         font-size: 0.9rem;
     }}
     @media (max-width: 768px) {{
-        .donation-table thead {{
-            display: none;
-        }}
+        .donation-table thead {{ display: none; }}
         .donation-table, .donation-table tbody, .donation-table tr, .donation-table td {{
             display: block;
             width: 100%;
@@ -463,20 +459,16 @@ def historial():
             font-weight: 600;
             text-align: left;
         }}
-        .summary {{
-            flex-direction: column;
-        }}
-        .summary-item {{
-            margin-bottom: 1rem;
-        }}
+        .summary {{ flex-direction: column; }}
+        .summary-item {{ margin-bottom: 1rem; }}
     }}
 </style>
 </head>
 <body>
 <header>
     <div class="container">
-        <h1>Donation History</h1>
-        <p class="subtitle">Donaciones</p>
+        <h1>Historial de Donaciones</h1>
+        <p class="subtitle">Gracias por tu apoyo 💜</p>
     </div>
 </header>
 <main class="container">
@@ -491,31 +483,64 @@ def historial():
                     <th>Monto</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="donation-body">
                 {filas}
             </tbody>
         </table>
         <div class="summary">
             <div class="summary-item">
-                <div class="summary-value">${total:.2f}</div>
-                <div class="summary-label">Total Donations</div>
+                <div class="summary-value" id="total">${total:.2f}</div>
+                <div class="summary-label">Total Donado</div>
             </div>
             <div class="summary-item">
-                <div class="summary-value">{cantidad}</div>
-                <div class="summary-label">Number of Donations</div>
+                <div class="summary-value" id="count">{cantidad}</div>
+                <div class="summary-label">Donaciones</div>
             </div>
             <div class="summary-item">
-                <div class="summary-value">${promedio:.2f}</div>
-                <div class="summary-label">Average Donation</div>
+                <div class="summary-value" id="average">${promedio:.2f}</div>
+                <div class="summary-label">Promedio</div>
             </div>
         </div>
     </section>
 </main>
 <footer>
     <div class="container">
-        <p>&copy; 2025 Donation History. All rights reserved.</p>
+        <p>&copy; 2025 Donaciones • Proyecto Flaky</p>
     </div>
 </footer>
+<script>
+    async function fetchDonations() {{
+        try {{
+            const res = await fetch('/api/donaciones');
+            const data = await res.json();
+            const body = document.getElementById("donation-body");
+            body.innerHTML = "";
+
+            let total = 0;
+
+            data.forEach(d => {{
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${{d.fecha}}</td>
+                    <td>${{d.usuario || "anónimo"}}</td>
+                    <td>${{d.mensaje}}</td>
+                    <td class="amount">$${{d.monto}}</td>
+                `;
+                body.appendChild(row);
+                total += d.monto;
+            }});
+
+            document.getElementById("total").textContent = `$${{total.toFixed(2)}}`;
+            document.getElementById("count").textContent = data.length;
+            document.getElementById("average").textContent = data.length ? `$${{(total / data.length).toFixed(2)}}` : "$0.00";
+        }} catch (err) {{
+            console.error("Error loading donations:", err);
+        }}
+    }}
+
+    fetchDonations();
+    setInterval(fetchDonations, 10000);
+</script>
 </body>
 </html>
 """
