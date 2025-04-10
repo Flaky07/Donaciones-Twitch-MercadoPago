@@ -129,7 +129,8 @@ def ultimo_mensaje():
                         "fecha": fecha_pago,
                         "monto": monto,
                         "mensaje": mensaje,
-                        "usuario": usuario
+                        "usuario": usuario,
+                        "external_reference": external_reference
                     }
 
                     donaciones.append(nueva_donacion)
