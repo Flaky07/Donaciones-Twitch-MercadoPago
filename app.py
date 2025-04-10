@@ -24,6 +24,9 @@ def crear_donacion():
         usuario = data["usuario"]
         mensaje = data["mensaje"]
 
+        # ✅ Generar external_reference único ANTES de enviarlo a MercadoPago
+        external_reference = f"{mensaje}-{int(datetime.now().timestamp())}"
+
         preference_data = {
             "items": [
                 {
@@ -40,7 +43,7 @@ def crear_donacion():
                 "failure": VERCEL_APP,
                 "pending": VERCEL_APP
             },
-            "external_reference": mensaje
+            "external_reference": external_reference  # 👈 ya corregido
         }
 
         res = requests.post(
@@ -68,7 +71,8 @@ def crear_donacion():
                 "mensaje": mensaje,
                 "monto": monto,
                 "usuario": usuario,
-                "fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                "fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "external_reference": external_reference  # 👈 también guardado
             }
 
             with open("pendientes.json", "w", encoding="utf-8") as f:
@@ -80,6 +84,7 @@ def crear_donacion():
 
     except Exception as e:
         return jsonify({"error": "Error interno", "detalle": str(e)}), 500
+
 
 @app.route("/ultimo-mensaje")
 def ultimo_mensaje():
@@ -96,17 +101,19 @@ def ultimo_mensaje():
         mensaje = data.get("mensaje", "")
         monto = data.get("monto", 0)
         usuario = data.get("usuario", "anónimo")
+        external_reference = data.get("external_reference", mensaje)
+
 
         res = requests.get(
-            f"https://api.mercadopago.com/v1/payment_search",
+            "https://api.mercadopago.com/v1/payments/search",
             headers={"Authorization": f"Bearer {ACCESS_TOKEN}"},
-            params={"preference_id": preference_id}
+            params={"external_reference": external_reference}
         )
 
         if res.status_code == 200:
             pagos = res.json().get("results", [])
             for pago in pagos:
-                print(f"[DEBUG] Verificando preferencia {preference_id} → status: {pago.get('status')}")
+                print(f"[DEBUG] Verificando mensaje '{mensaje}' → status: {pago.get('status')}")
                 if pago.get("status") == "approved":
                     fecha_pago = pago.get("date_approved", "fecha no disponible")
 
