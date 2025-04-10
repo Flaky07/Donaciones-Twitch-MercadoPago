@@ -141,7 +141,6 @@ def ultimo_mensaje():
                         json.dump(pendientes, pf, indent=4, ensure_ascii=False)
 
                     return nueva_donacion
-
     return {}
 
 @app.route("/overlay")
@@ -155,7 +154,7 @@ def overlay():
       --bg-color: rgba(15, 23, 42, 0.96);
       --border-color: rgba(99, 102, 241, 0.3);
     }
-    
+
     body {
       margin: 0;
       padding: 0;
@@ -169,7 +168,7 @@ def overlay():
       height: 100vh;
       overflow: hidden;
     }
-    
+
     .alert-container {
       background-color: var(--bg-color);
       backdrop-filter: blur(8px);
@@ -186,12 +185,12 @@ def overlay():
       opacity: 0;
       transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    
+
     .alert-container.visible {
       transform: translateY(0);
       opacity: 1;
     }
-    
+
     .alert-icon {
       background-color: var(--primary-color);
       border-radius: 50%;
@@ -202,18 +201,18 @@ def overlay():
       justify-content: center;
       flex-shrink: 0;
     }
-    
+
     .alert-content {
       flex: 1;
     }
-    
+
     .alert-message {
       font-weight: 600;
       font-size: 18px;
       margin-bottom: 4px;
       line-height: 1.4;
     }
-    
+
     .alert-amount {
       font-size: 22px;
       font-weight: 700;
@@ -223,7 +222,9 @@ def overlay():
     <body>
     <div id="contenedor" class="alert-container">
       <div class="alert-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" 
+          stroke-linecap="round" stroke-linejoin="round">
           <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
           <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
           <path d="M4 2C2.8 3.7 2 5.7 2 8"></path>
@@ -231,79 +232,76 @@ def overlay():
         </svg>
       </div>
       <div class="alert-content">
-        <div id="mensaje" class="alert-message"></div>
-        <div id="monto" class="alert-amount"></div>
+        <div id="mensaje" class="alert-message">Esperando mensaje...</div>
+        <div id="monto" class="alert-amount">$0.00</div>
       </div>
     </div>
+
     <script>
-      let queue = [];                // Cola de mensajes
-      let mostrando = false;        // Flag para saber si ya hay un mensaje en pantalla
-      let ultimaReferencia = "";    // Para evitar duplicados exactos
+    let queue = [];                // Cola de mensajes
+    let mostrando = false;         // Flag para saber si ya hay un mensaje en pantalla
+    let ultimaReferencia = "";     // Última referencia mostrada
 
-      // Verifica si hay un nuevo mensaje
-      async function verificarNuevoMensaje() {
-        try {
-          const res = await fetch('/ultimo-mensaje');
-          const data = await res.json();
+    async function verificarNuevoMensaje() {
+      try {
+        const res = await fetch('/ultimo-mensaje');
+        const data = await res.json();
 
-          // Validamos si el mensaje tiene external_reference único
-          if (data && data.external_reference && data.external_reference !== ultimaReferencia) {
-            ultimaReferencia = data.external_reference;
+        if (data && data.external_reference && data.external_reference !== ultimaReferencia) {
+          ultimaReferencia = data.external_reference;
 
-            // Solo si no existe en la queue lo añadimos
-            const yaExiste = queue.some(item => item.external_reference === data.external_reference);
-            if (!yaExiste) {
-              queue.push(data);
-              if (!mostrando) {
-                mostrarSiguiente();
-              }
+          const yaExiste = queue.some(item => item.external_reference === data.external_reference);
+          if (!yaExiste) {
+            queue.push(data);
+            if (!mostrando) {
+              mostrarSiguiente();
             }
           }
-        } catch (error) {
-          console.error("Error al verificar mensajes:", error);
         }
+      } catch (error) {
+        console.error("Error al verificar mensajes:", error);
+      }
+    }
+
+    function mostrarSiguiente() {
+      if (queue.length === 0) {
+        mostrando = false;
+        return;
       }
 
-      // Muestra el siguiente mensaje en la cola
-      function mostrarSiguiente() {
-        if (queue.length === 0) {
-          mostrando = false;
-          return;
-        }
+      mostrando = true;
+      const data = queue.shift();
+      mostrarMensaje(data);
 
-        mostrando = true;
-        const data = queue.shift();
-        mostrarMensaje(data);
-
+      setTimeout(() => {
+        ocultarMensaje();
         setTimeout(() => {
-          ocultarMensaje();
-          setTimeout(() => {
-            mostrarSiguiente();
-          }, 1000); // Pausa entre mensajes
-        }, 8000);
-      }
+          mostrarSiguiente();
+        }, 1000); // Pausa entre mensajes
+      }, 8000);
+    }
 
-      // Muestra un mensaje en pantalla
-      function mostrarMensaje(data) {
-        const contenedor = document.getElementById("contenedor");
-        const mensajeEl = document.getElementById("mensaje");
-        const montoEl = document.getElementById("monto");
+    function mostrarMensaje(data) {
+      const contenedor = document.getElementById("contenedor");
+      const mensajeEl = document.getElementById("mensaje");
+      const montoEl = document.getElementById("monto");
 
-        const usuario = data.usuario || "anónimo";
-        mensajeEl.textContent = ` ${usuario} : ${data.mensaje}`;
-        montoEl.textContent = `$${data.monto}`;
+      const usuario = data.usuario || "anónimo";
+      const mensaje = data.mensaje || "(sin mensaje)";
+      const monto = parseFloat(data.monto || 0).toFixed(2);
 
-        contenedor.classList.add("visible");
-      }
+      mensajeEl.textContent = `${usuario} : ${mensaje}`;
+      montoEl.textContent = `$${monto}`;
 
-      // Oculta el mensaje actual
-      function ocultarMensaje() {
-        const contenedor = document.getElementById("contenedor");
-        contenedor.classList.remove("visible");
-      }
+      contenedor.classList.add("visible");
+    }
 
-      // Ejecutar cada 3 segundos para ver si hay nuevos mensajes
-      setInterval(verificarNuevoMensaje, 3000);
+    function ocultarMensaje() {
+      document.getElementById("contenedor").classList.remove("visible");
+    }
+
+    // Consulta cada 3 segundos
+    setInterval(verificarNuevoMensaje, 3000);
     </script>
     </body></html>
     """
@@ -539,7 +537,7 @@ def historial():
     }}
 
     fetchDonations();
-    setInterval(fetchDonations, 10000);
+    setInterval(fetchDonations, 3000);
 </script>
 </body>
 </html>
