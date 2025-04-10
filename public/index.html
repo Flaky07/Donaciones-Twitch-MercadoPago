@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Twitch Donacion - Mariscal</title>
-  <link rel="stylesheet" href="../static/styles/styles.css">
-  <script src="../api/config.js"></script>
+  <title>Donaciones MercadoPago</title>
+  <link rel="stylesheet" href="static/styles/styles.css">
+  <script src="api/config.js"></script>
 </head>
 <body>
   <div class="container">
@@ -30,6 +30,12 @@
               </div>
               <small>Ingresa el monto</small>
               <div class="error-message" id="amountError"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="usuario">Usuario</label>
+              <input type="text" id="usuario" name="usuario" placeholder="anonimo" />
+              <small>Deja vacío para donar como anónimo</small>
             </div>
 
             <div class="form-group">
@@ -72,9 +78,7 @@
     </div>
   </div>
 
-  <!--                    Twitch Embed 
-     Editar la variable TWITCH_CHANNEL con el nombre de su canal
-                            Linea 79 -->
+  <!-- Twitch Embed -->    
   
   <script src="https://embed.twitch.tv/embed/v1.js"></script>
   <script type="text/javascript">
@@ -111,6 +115,10 @@
       event.preventDefault();
 
       const monto = document.getElementById("monto").value;
+      let usuario = document.getElementById("usuario").value;
+      if (!usuario.trim()) {
+        usuario = "anonimo";
+      }
       const mensaje = document.getElementById("mensaje").value;
       const submitButton = document.getElementById("submitButton");
       const successDiv = document.getElementById("successMessage");
@@ -121,7 +129,7 @@
       fetch(`${window.ENV.BACKEND_URL}/crear-donacion`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ monto, mensaje })
+        body: JSON.stringify({ monto,usuario, mensaje })
       })
       .then(res => {
         if (!res.ok) throw new Error("Error al enviar la donación");
