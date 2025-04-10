@@ -253,7 +253,7 @@ def overlay():
       const montoEl = document.getElementById("monto");
 
       const usuario = data.usuario || "anónimo";
-      mensajeEl.textContent = `@${usuario}: ${data.mensaje}`;
+      mensajeEl.textContent = `${usuario} : ${data.mensaje}`;
       montoEl.textContent = `$${data.monto}`;
 
       contenedor.classList.add("visible");
