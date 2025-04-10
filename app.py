@@ -309,5 +309,217 @@ def overlay():
     """
 
 
+@app.route("/historial")
+def historial():
+
+    if os.path.exists("donaciones.json"):
+        with open("donaciones.json", "r", encoding="utf-8") as f:
+            try:
+                donaciones = json.load(f)
+            except json.JSONDecodeError:
+                donaciones = []
+    else:
+        donaciones = []
+
+    filas = "\n".join(f"""
+        <tr>
+            <td data-label='Fecha'>{d['fecha']}</td>
+            <td data-label='Usuario'>{d.get('usuario', 'anónimo')}</td>
+            <td data-label='Mensaje'>{d['mensaje']}</td>
+            <td data-label='Monto' class='amount'>${d['monto']}</td>
+        </tr>
+    """ for d in reversed(donaciones))
+
+    total = sum(d["monto"] for d in donaciones)
+    cantidad = len(donaciones)
+    promedio = total / cantidad if cantidad > 0 else 0
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Donation History</title>
+<style>
+    * {{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }}
+    body {{
+        background-color: #f5f5f5;
+        color: #333;
+        line-height: 1.6;
+    }}
+    .container {{
+        width: 90%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }}
+    header {{
+        background-color: #4CAF50;
+        color: white;
+        text-align: center;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 10px 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }}
+    h1 {{
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }}
+    .subtitle {{
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }}
+    .card {{
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }}
+    h2 {{
+        color: #4CAF50;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 0.5rem;
+    }}
+    .donation-table {{
+        width: 100%;
+        border-collapse: collapse;
+    }}
+    .donation-table th, 
+    .donation-table td {{
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #f0f0f0;
+    }}
+    .donation-table th {{
+        background-color: #f9f9f9;
+        font-weight: 600;
+    }}
+    .donation-table tr:hover {{
+        background-color: #f5f5f5;
+    }}
+    .amount {{
+        font-weight: 600;
+        color: #4CAF50;
+    }}
+    .summary {{
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 2px solid #f0f0f0;
+    }}
+    .summary-item {{
+        text-align: center;
+        flex: 1;
+    }}
+    .summary-value {{
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #4CAF50;
+        margin-bottom: 0.5rem;
+    }}
+    .summary-label {{
+        font-size: 0.9rem;
+        color: #777;
+    }}
+    footer {{
+        text-align: center;
+        padding: 2rem 0;
+        color: #777;
+        font-size: 0.9rem;
+    }}
+    @media (max-width: 768px) {{
+        .donation-table thead {{
+            display: none;
+        }}
+        .donation-table, .donation-table tbody, .donation-table tr, .donation-table td {{
+            display: block;
+            width: 100%;
+        }}
+        .donation-table tr {{
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }}
+        .donation-table td {{
+            text-align: right;
+            padding-left: 50%;
+            position: relative;
+            border-bottom: 1px solid #f5f5f5;
+        }}
+        .donation-table td::before {{
+            content: attr(data-label);
+            position: absolute;
+            left: 0;
+            width: 50%;
+            padding-left: 15px;
+            font-weight: 600;
+            text-align: left;
+        }}
+        .summary {{
+            flex-direction: column;
+        }}
+        .summary-item {{
+            margin-bottom: 1rem;
+        }}
+    }}
+</style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <h1>Donation History</h1>
+        <p class="subtitle">Donaciones</p>
+    </div>
+</header>
+<main class="container">
+    <section class="card">
+        <h2>Donaciones Recientes</h2>
+        <table class="donation-table">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Usuario</th>
+                    <th>Mensaje</th>
+                    <th>Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                {filas}
+            </tbody>
+        </table>
+        <div class="summary">
+            <div class="summary-item">
+                <div class="summary-value">${total:.2f}</div>
+                <div class="summary-label">Total Donations</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-value">{cantidad}</div>
+                <div class="summary-label">Number of Donations</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-value">${promedio:.2f}</div>
+                <div class="summary-label">Average Donation</div>
+            </div>
+        </div>
+    </section>
+</main>
+<footer>
+    <div class="container">
+        <p>&copy; 2025 Donation History. All rights reserved.</p>
+    </div>
+</footer>
+</body>
+</html>
+"""
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
