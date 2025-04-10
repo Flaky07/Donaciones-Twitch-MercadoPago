@@ -236,52 +236,74 @@ def overlay():
       </div>
     </div>
     <script>
-    let queue = [];
-    let mostrando = false;
-    let historial = new Set();
+      let queue = [];                // Cola de mensajes
+      let mostrando = false;        // Flag para saber si ya hay un mensaje en pantalla
+      let ultimaReferencia = "";    // Para evitar duplicados exactos
 
-    async function verificarNuevoMensaje() {
-      try {
-        const res = await fetch('/ultimo-mensaje');
-        const data = await res.json();
+      // Verifica si hay un nuevo mensaje
+      async function verificarNuevoMensaje() {
+        try {
+          const res = await fetch('/ultimo-mensaje');
+          const data = await res.json();
 
-        if (data && data.external_reference && !historial.has(data.external_reference)) {
-          queue.push(data);
-          historial.add(data.external_reference);
-          procesarCola();
+          // Validamos si el mensaje tiene external_reference único
+          if (data && data.external_reference && data.external_reference !== ultimaReferencia) {
+            ultimaReferencia = data.external_reference;
+
+            // Solo si no existe en la queue lo añadimos
+            const yaExiste = queue.some(item => item.external_reference === data.external_reference);
+            if (!yaExiste) {
+              queue.push(data);
+              if (!mostrando) {
+                mostrarSiguiente();
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Error al verificar mensajes:", error);
         }
-      } catch (error) {
-        console.error("Error al verificar mensajes:", error);
       }
-    }
 
-    function procesarCola() {
-      if (mostrando || queue.length === 0) return;
+      // Muestra el siguiente mensaje en la cola
+      function mostrarSiguiente() {
+        if (queue.length === 0) {
+          mostrando = false;
+          return;
+        }
 
-      const data = queue.shift();
-      mostrarMensaje(data);
-    }
+        mostrando = true;
+        const data = queue.shift();
+        mostrarMensaje(data);
 
-    function mostrarMensaje(data) {
-      const contenedor = document.getElementById("contenedor");
-      const mensajeEl = document.getElementById("mensaje");
-      const montoEl = document.getElementById("monto");
+        setTimeout(() => {
+          ocultarMensaje();
+          setTimeout(() => {
+            mostrarSiguiente();
+          }, 1000); // Pausa entre mensajes
+        }, 8000);
+      }
 
-      const usuario = data.usuario || "anónimo";
-      mensajeEl.textContent = ` ${usuario} : ${data.mensaje}`;
-      montoEl.textContent = `$${data.monto}`;
+      // Muestra un mensaje en pantalla
+      function mostrarMensaje(data) {
+        const contenedor = document.getElementById("contenedor");
+        const mensajeEl = document.getElementById("mensaje");
+        const montoEl = document.getElementById("monto");
 
-      contenedor.classList.add("visible");
-      mostrando = true;
+        const usuario = data.usuario || "anónimo";
+        mensajeEl.textContent = ` ${usuario} : ${data.mensaje}`;
+        montoEl.textContent = `$${data.monto}`;
 
-      setTimeout(() => {
+        contenedor.classList.add("visible");
+      }
+
+      // Oculta el mensaje actual
+      function ocultarMensaje() {
+        const contenedor = document.getElementById("contenedor");
         contenedor.classList.remove("visible");
-        mostrando = false;
-        setTimeout(procesarCola, 100); // Procesar siguiente
-      }, 8000);
-    }
+      }
 
-    setInterval(verificarNuevoMensaje, 3000);
+      // Ejecutar cada 3 segundos para ver si hay nuevos mensajes
+      setInterval(verificarNuevoMensaje, 3000);
     </script>
     </body></html>
     """
