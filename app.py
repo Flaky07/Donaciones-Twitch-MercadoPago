@@ -95,19 +95,19 @@ def ultimo_mensaje():
     for preference_id, data in list(pendientes.items()):
         mensaje = data.get("mensaje", "")
         monto = data.get("monto", 0)
-        usuario = data.get("usuario", "anónimo")  # 👈 leemos usuario
+        usuario = data.get("usuario", "anónimo")
 
         res = requests.get(
-            "https://api.mercadopago.com/v1/payments/search",
+            f"https://api.mercadopago.com/v1/payment_search",
             headers={"Authorization": f"Bearer {ACCESS_TOKEN}"},
-            params={"external_reference": mensaje}
+            params={"preference_id": preference_id}
         )
 
         if res.status_code == 200:
             pagos = res.json().get("results", [])
             for pago in pagos:
+                print(f"[DEBUG] Verificando preferencia {preference_id} → status: {pago.get('status')}")
                 if pago.get("status") == "approved":
-                    email = pago.get("payer", {}).get("email", "desconocido")
                     fecha_pago = pago.get("date_approved", "fecha no disponible")
 
                     donaciones = []
@@ -121,7 +121,6 @@ def ultimo_mensaje():
                     nueva_donacion = {
                         "fecha": fecha_pago,
                         "monto": monto,
-                        "email": email,
                         "mensaje": mensaje,
                         "usuario": usuario
                     }
@@ -253,7 +252,7 @@ def overlay():
       const montoEl = document.getElementById("monto");
 
       const usuario = data.usuario || "anónimo";
-      mensajeEl.textContent = `${usuario} : ${data.mensaje}`;
+      mensajeEl.textContent = ` ${usuario} : ${data.mensaje}`;
       montoEl.textContent = `$${data.monto}`;
 
       contenedor.classList.add("visible");
