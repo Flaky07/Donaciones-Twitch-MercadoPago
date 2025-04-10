@@ -235,22 +235,31 @@ def overlay():
         <div id="monto" class="alert-amount"></div>
       </div>
     </div>
-
     <script>
-    let ultimoMensaje = "";
-    let timeoutId = null;
+    let queue = [];
+    let mostrando = false;
+    let historial = new Set();
 
     async function verificarNuevoMensaje() {
       try {
         const res = await fetch('/ultimo-mensaje');
         const data = await res.json();
-        if (data && data.mensaje && data.mensaje !== ultimoMensaje) {
-          ultimoMensaje = data.mensaje;
-          mostrarMensaje(data);
+
+        if (data && data.external_reference && !historial.has(data.external_reference)) {
+          queue.push(data);
+          historial.add(data.external_reference);
+          procesarCola();
         }
       } catch (error) {
         console.error("Error al verificar mensajes:", error);
       }
+    }
+
+    function procesarCola() {
+      if (mostrando || queue.length === 0) return;
+
+      const data = queue.shift();
+      mostrarMensaje(data);
     }
 
     function mostrarMensaje(data) {
@@ -263,13 +272,12 @@ def overlay():
       montoEl.textContent = `$${data.monto}`;
 
       contenedor.classList.add("visible");
+      mostrando = true;
 
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-
-      timeoutId = setTimeout(() => {
+      setTimeout(() => {
         contenedor.classList.remove("visible");
+        mostrando = false;
+        setTimeout(procesarCola, 100); // Procesar siguiente
       }, 8000);
     }
 
