@@ -41,8 +41,6 @@ Este proyecto permite a cualquier **streamer** aceptar **donaciones a través de
 
 #### 📦 Backend (Render)
 
-Renombrar `.env.example` a `.env` y completar:
-
 ```env
 MP_ACCESS_TOKEN=APP_USR-XXXXXXXXXXXXXXXX
 VERCEL_APP=https://TU_FRONTEND.vercel.app
