@@ -16,11 +16,11 @@
 
     <div class="content-wrapper" style="display: flex; gap: 24px;">
       <!-- GIF Selector -->
-      <div style="width: 300px;">
-        <input type="hidden" id="gif_url">
-        <input type="text" id="gifSearch" placeholder="Buscar gif..." style="width: 100%; padding: 8px; margin-bottom: 10px;">
-        <div id="gifResults" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;"></div>
-      </div>
+      <div class="gif-selector">
+        <input type="text" id="gifSearch" placeholder="Buscar gif..." />
+        <div id="gifResults" class="gif-grid"></div>
+        <input type="hidden" id="gif_url" />
+      </div>      
 
       <!-- Formulario Donación -->
       <div class="donation-card" style="flex: 1;">
@@ -117,11 +117,17 @@
   const gifResults = document.getElementById("gifResults");
   const gifUrlInput = document.getElementById("gif_url");
 
-  async function buscarGifs(query = "league of legends") {
-    const url = `https://api.giphy.com/v1/gifs/search?api_key=${process.env.GIF_API}&q=${encodeURIComponent(query)}&limit=8`;
-    const res = await fetch(url);
-    const json = await res.json();
-    mostrarResultadosGif(json.data);
+  const GIPHY_API_KEY = "dc6zaTOxFJmzC";
+
+  async function buscarGifs(query = "popular") {
+    const url = `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(query)}&limit=8`;
+    try {
+      const res = await fetch(url);
+      const json = await res.json();
+      mostrarResultadosGif(json.data);
+    } catch (error) {
+      console.error("Error al cargar GIFs:", error);
+    }
   }
 
   function mostrarResultadosGif(gifs) {
@@ -132,15 +138,15 @@
       img.alt = "gif";
       img.onclick = () => {
         gifUrlInput.value = gif.images.original.url;
-        document.querySelectorAll("#gifResults img").forEach(i => i.style.border = "none");
-        img.style.border = "3px solid #6366f1";
+        document.querySelectorAll("#gifResults img").forEach(i => i.classList.remove("selected"));
+        img.classList.add("selected");
       };
       gifResults.appendChild(img);
     });
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    buscarGifs("popular");
+    buscarGifs(); // inicial con "popular"
   });
 
   gifSearch.addEventListener("input", () => {
@@ -150,6 +156,7 @@
     }
   });
 </script>
+
 
 
 <script>

@@ -3,32 +3,210 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
+  }
+  
+  body {
     background-color: #242325;
     color: white;
     line-height: 1.6;
-}
-
-.container {
-    max-width: 800px; /* subimos de 500px */
+  }
+  
+  .container {
+    max-width: 800px;
     margin: 40px auto;
     padding: 0 20px;
-}
-
-.content-wrapper {
+  }
+  
+  .content-wrapper {
     display: flex;
     justify-content: center;
     align-items: flex-start;
     gap: 30px;
     flex-wrap: wrap;
     margin-top: 30px;
-}
-
-
-
-.twitch-floating {
+  }
+  
+  .gif-selector {
+    width: 280px;
+    margin-right: 30px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #gifSearch {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    max-width: 300px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  
+  #gifResults {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+    max-width: 320px;
+  }
+  
+  #gifResults img {
+    width: 100%;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  #gifResults img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  #gifResults img.selected {
+    border: 3px solid #6366f1;
+  }
+  
+  .donation-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .donation-header h1 {
+    font-size: 28px;
+    color: white;
+    margin-bottom: 8px;
+  }
+  
+  .donation-header p {
+    color: #718096;
+  }
+  
+  .donation-card {
+    flex: 1;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .card-header {
+    padding: 24px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .card-header h2 {
+    font-size: 20px;
+    margin-bottom: 8px;
+    color: #2d3748;
+  }
+  
+  .card-body {
+    padding: 24px;
+  }
+  
+  .card-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #e2e8f0;
+    text-align: center;
+  }
+  
+  .card-footer p {
+    font-size: 12px;
+    color: #718096;
+  }
+  
+  .form-group {
+    margin-bottom: 24px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #4a5568;
+  }
+  
+  .input-wrapper {
+    position: relative;
+  }
+  
+  .currency-symbol {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #718096;
+  }
+  
+  input, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+  }
+  
+  input {
+    padding-left: 28px;
+  }
+  
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: #6e1727;
+    box-shadow: 0 0 0 3px rgba(82, 20, 10, 0.15);
+  }
+  
+  small {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #718096;
+  }
+  
+  button {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background-color: #A4243B;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #6e1727;
+  }
+  
+  button:disabled {
+    background-color: #a0aec0;
+    cursor: not-allowed;
+  }
+  
+  .button-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .heart-icon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .error-message {
+    color: #e53e3e;
+    font-size: 12px;
+    margin-top: 6px;
+    min-height: 18px;
+  }
+  
+  .twitch-floating {
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -39,19 +217,17 @@ body {
     overflow: hidden;
     background-color: #000;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
-}
-
-/* Nueva envoltura para permitir clics solo en el botón */
-.twitch-close-wrapper {
+  }
+  
+  .twitch-close-wrapper {
     position: absolute;
     top: 4px;
     right: 4px;
     z-index: 1001;
     pointer-events: auto;
-}
-
-/* Botón con interactividad, pero sin ocupar espacio fantasma */
-.close-twitch {
+  }
+  
+  .close-twitch {
     background: rgba(0,0,0,0.4);
     color: white;
     border: none;
@@ -61,9 +237,9 @@ body {
     padding: 2px 6px;
     border-radius: 4px;
     pointer-events: all;
-}
-
-.show-twitch {
+  }
+  
+  .show-twitch {
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -76,271 +252,39 @@ body {
     cursor: pointer;
     font-size: 14px;
     box-shadow: 0 0 6px rgba(0,0,0,0.3);
-    display: inline-flex;        /* ✅ para alinear ícono y texto correctamente */
+    display: inline-flex;
     align-items: center;
-    gap: 8px;                    /* espacio entre ícono y texto */
-    width: auto;                /* ✅ que no ocupe todo el ancho */
-  }
-
-.donation-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.donation-header h1 {
-    font-size: 28px;
-    color: white;
-    margin-bottom: 8px;
-}
-
-.donation-header p {
-    color: #718096;
-}
-
-.donation-card {
-    flex: 1;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-}
-
-.card-header {
-    padding: 24px;
-    border-bottom: 1px solid #e2e8f0;
-}
-
-.card-header h2 {
-    font-size: 20px;
-    margin-bottom: 8px;
-    color: #2d3748;
-}
-
-.card-header p {
-    color: #718096;
-    font-size: 14px;
-}
-
-.card-body {
-    padding: 24px;
-}
-
-.card-footer {
-    padding: 16px 24px;
-    border-top: 1px solid #e2e8f0;
-    text-align: center;
-}
-
-.card-footer p {
-    font-size: 12px;
-    color: #718096;
-}
-
-.form-group {
-    margin-bottom: 24px;
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: #4a5568;
-}
-
-.input-wrapper {
-    position: relative;
-}
-
-.currency-symbol {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #718096;
-}
-
-input, textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    font-size: 16px;
-    transition: border-color 0.3s;
-}
-
-input {
-    padding-left: 28px;
-}
-
-input:focus, textarea:focus {
-    outline: none;
-    border-color: #6e1727;
-    box-shadow: 0 0 0 3px rgba(82, 20, 10, 0.15);
-}
-
-textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-
-small {
-    display: block;
-    margin-top: 6px;
-    font-size: 12px;
-    color: #718096;
-}
-
-button {
-    display: block;
-    width: 100%;
-    padding: 14px;
-    background-color: #A4243B;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #6e1727;
-}
-
-button:disabled {
-    background-color: #a0aec0;
-    cursor: not-allowed;
-}
-
-.button-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     gap: 8px;
-}
-
-.heart-icon {
-    width: 16px;
-    height: 16px;
-}
-
-.spinner {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    border-top-color: white;
-    animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.error-message {
-    color: #e53e3e;
-    font-size: 12px;
-    margin-top: 6px;
-    min-height: 18px;
-}
-
-.success-message {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s, visibility 0.3s;
-}
-
-.success-message.show {
-    opacity: 1;
-    visibility: visible;
-}
-
-.success-content {
-    background-color: white;
-    padding: 30px;
-    border-radius: 10px;
-    text-align: center;
-    max-width: 400px;
-    width: 90%;
-}
-
-.check-icon {
-    width: 50px;
-    height: 50px;
-    stroke: #48bb78;
-    margin-bottom: 16px;
-}
-
-.success-content h3 {
-    font-size: 24px;
-    margin-bottom: 8px;
-    color: #2d3748;
-}
-
-.success-content p {
-    color: #718096;
-    margin-bottom: 20px;
-}
-
-.success-content button {
-    background-color: #48bb78;
-    padding: 10px 20px;
     width: auto;
-    margin: 0 auto;
-}
-
-.success-content button:hover {
-    background-color: #38a169;
-}
-
-#gifResults {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin-top: 10px;
-    max-width: 320px;
   }
-
-  #gifResults img {
-    width: 100%;
-    border-radius: 6px;
-    transition: transform 0.2s, border 0.2s;
-  }
-
-  #gifResults img:hover {
-    transform: scale(1.05);
-    cursor: pointer;
-  }
-
-  #gifSearch {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    max-width: 300px;
-  }
-
-@media (max-width: 480px) {
+  
+  @media (max-width: 480px) {
     .container {
-        margin: 20px auto;
+      margin: 20px auto;
     }
-    
+  
     .donation-header h1 {
-        font-size: 24px;
+      font-size: 24px;
     }
-    
+  
     .card-header h2 {
-        font-size: 18px;
+      font-size: 18px;
     }
-}
+  
+    .content-wrapper {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .gif-selector {
+      width: 100%;
+      margin-right: 0;
+      margin-bottom: 20px;
+    }
+  
+    #gifResults {
+      max-width: 100%;
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
