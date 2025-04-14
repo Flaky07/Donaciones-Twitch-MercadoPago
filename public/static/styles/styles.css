@@ -305,6 +305,32 @@ button:disabled {
     background-color: #38a169;
 }
 
+#gifResults {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+    max-width: 320px;
+  }
+
+  #gifResults img {
+    width: 100%;
+    border-radius: 6px;
+    transition: transform 0.2s, border 0.2s;
+  }
+
+  #gifResults img:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
+
+  #gifSearch {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    max-width: 300px;
+  }
+
 @media (max-width: 480px) {
     .container {
         margin: 20px auto;
