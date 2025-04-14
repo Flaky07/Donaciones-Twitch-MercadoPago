@@ -161,16 +161,32 @@ def overlay():
       padding: 0;
       background: transparent;
       color: var(--text-color);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 16px;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      overflow: hidden;
+      position: relative;
+    }
+
+    #gif-alerta {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      z-index: 999;
+      display: none;
     }
 
     .alert-container {
+      position: absolute;
+      bottom: 5%;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
       background-color: var(--bg-color);
       backdrop-filter: blur(8px);
       border: 1px solid var(--border-color);
@@ -182,13 +198,12 @@ def overlay():
       display: flex;
       align-items: center;
       gap: 16px;
-      transform: translateY(20px);
       opacity: 0;
-      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 0.5s ease, opacity 0.5s ease;
     }
 
     .alert-container.visible {
-      transform: translateY(0);
+      transform: translateX(-50%) translateY(0);
       opacity: 1;
     }
 
@@ -221,7 +236,10 @@ def overlay():
     }
     </style></head>
     <body>
-    <audio id="alert-sound" src="/static/pomelo.mp3" preload="auto"></audio>
+
+    <audio id="alert-sound" src="https://flaky07.github.io/Donaciones-Twitch-MercadoPago/static/pomelo.mp3" preload="auto"></audio>
+    <img id="gif-alerta" src="https://i.giphy.com/tM76xlB5idOYRwB0wR.webp" />
+
     <div id="contenedor" class="alert-container">
       <div class="alert-icon">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
@@ -240,9 +258,9 @@ def overlay():
     </div>
 
     <script>
-    let queue = [];                // Cola de mensajes
-    let mostrando = false;         // Flag para saber si ya hay un mensaje en pantalla
-    let ultimaReferencia = "";     // Última referencia mostrada
+    let queue = [];
+    let mostrando = false;
+    let ultimaReferencia = "";
 
     async function verificarNuevoMensaje() {
       try {
@@ -279,7 +297,7 @@ def overlay():
         ocultarMensaje();
         setTimeout(() => {
           mostrarSiguiente();
-        }, 1000); // Pausa entre mensajes
+        }, 1000);
       }, 8000);
     }
 
@@ -287,27 +305,28 @@ def overlay():
       const contenedor = document.getElementById("contenedor");
       const mensajeEl = document.getElementById("mensaje");
       const montoEl = document.getElementById("monto");
+      const audio = document.getElementById("alert-sound");
+      const gif = document.getElementById("gif-alerta");
 
-      const usuario = data.usuario || "anónimo";
-      const mensaje = data.mensaje || "(sin mensaje)";
-      const monto = parseFloat(data.monto || 0).toFixed(2);
-
-      mensajeEl.textContent = `${usuario} : ${mensaje}`;
-      montoEl.textContent = `$${monto}`;
+      mensajeEl.textContent = `${data.usuario || "anónimo"} : ${data.mensaje || "(sin mensaje)"}`;
+      montoEl.textContent = `$${parseFloat(data.monto || 0).toFixed(2)}`;
 
       contenedor.classList.add("visible");
-      document.getElementById("alert-sound").play();
+      gif.style.display = "block";
+      audio.currentTime = 0;
+      audio.play();
     }
 
     function ocultarMensaje() {
       document.getElementById("contenedor").classList.remove("visible");
+      document.getElementById("gif-alerta").style.display = "none";
     }
 
-    // Consulta cada 3 segundos
     setInterval(verificarNuevoMensaje, 3000);
     </script>
     </body></html>
     """
+
 
 
 @app.route("/api/donaciones")
