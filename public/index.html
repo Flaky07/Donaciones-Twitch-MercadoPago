@@ -134,32 +134,38 @@
 
     function mostrarResultadosSonidos(sonidos) {
       soundResults.innerHTML = "";
-      sonidos.slice(0, 5).forEach(sonido => {
+      sonidos.slice(0, 5).forEach((sonido, idx) => {
         const wrapper = document.createElement("div");
         wrapper.classList.add("sound-wrapper");
-
+      
         const iframe = document.createElement("iframe");
         iframe.src = `https://www.myinstants.com/instant/${sonido.id}/embed/`;
         iframe.width = "110";
         iframe.height = "200";
         iframe.frameBorder = "0";
         iframe.scrolling = "no";
-
-        wrapper.onclick = () => {
+      
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = "soundOption";
+        radio.value = sonido.mp3;
+      
+        radio.onclick = () => {
           soundUrlInput.value = sonido.mp3;
           document.querySelectorAll(".sound-wrapper").forEach(i => i.classList.remove("selected"));
           wrapper.classList.add("selected");
         };
-
+      
+        wrapper.onclick = () => {
+          radio.click();
+        };
+      
         wrapper.appendChild(iframe);
+        wrapper.appendChild(radio);
         soundResults.appendChild(wrapper);
       });
     }
 
-    soundSearch.addEventListener("input", () => {
-      const query = soundSearch.value.trim();
-      if (query.length >= 2) buscarSonidos(query);
-    });
 
     document.getElementById("donationForm").addEventListener("submit", function (event) {
       event.preventDefault();
