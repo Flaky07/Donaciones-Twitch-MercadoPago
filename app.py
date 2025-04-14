@@ -183,17 +183,17 @@ def overlay():
 
     .alert-gif {
       position: absolute;
-      top: 0;
+      top: -40px;
       left: 50%;
       transform: translateX(-50%);
-      max-width: 300px;
+      max-width: 200px;
       height: auto;
       z-index: 1;
     }
 
     .alert-container {
       position: absolute;
-      top: 160px;
+      top: 200px;
       left: 50%;
       transform: translateX(-50%);
       background-color: var(--bg-color);
