@@ -104,7 +104,7 @@ def ultimo_mensaje():
         monto = data.get("monto", 0)
         usuario = data.get("usuario", "anónimo")
         external_reference = data.get("external_reference", mensaje)
-
+        gif = data.get("gif", "")  # 👈 Se extrae el gif desde la data pendiente
 
         res = requests.get(
             "https://api.mercadopago.com/v1/payments/search",
@@ -132,7 +132,8 @@ def ultimo_mensaje():
                         "monto": monto,
                         "mensaje": mensaje,
                         "usuario": usuario,
-                        "external_reference": external_reference
+                        "external_reference": external_reference,
+                        "gif": gif  # 👈 Ahora se devuelve junto a la donación
                     }
 
                     donaciones.append(nueva_donacion)
@@ -145,6 +146,7 @@ def ultimo_mensaje():
 
                     return nueva_donacion
     return {}
+
 
 @app.route("/overlay")
 def overlay():
@@ -243,7 +245,7 @@ def overlay():
     </head>
     <body>
     <div class="overlay-wrapper">
-      <img id="gif" class="alert-gif" src="" alt="gif">
+      <img class="alert-gif" id="gif" src="" alt="gif">
       
       <div id="contenedor" class="alert-container">
         <div class="alert-icon">
@@ -302,14 +304,23 @@ def overlay():
 
     function mostrarMensaje(data) {
       const c = document.getElementById("contenedor");
+
+      // Mostrar texto
       document.getElementById("mensaje").textContent = `${data.usuario || "anónimo"} : ${data.mensaje}`;
       document.getElementById("monto").textContent = `$${parseFloat(data.monto).toFixed(2)}`;
-      document.getElementById("gif").src = data.gif || "";
+
+      // Mostrar gif personalizado o uno por defecto si no viene nada
+      const gifEl = document.getElementById("gif");
+      gifEl.src = data.gif || "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeTlzb21yczh0eGVkZ3U5NHdxc2MwODY5cDdyNzk3aGxydnh4YzFpMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IXnnnVD5kyKqXRhaCR/giphy.gif";
+      gifEl.style.display = "block";
+
       c.classList.add("visible");
     }
 
+
     function ocultarMensaje() {
       document.getElementById("contenedor").classList.remove("visible");
+      document.getElementById("gif").src = "";
     }
 
     setInterval(verificarNuevoMensaje, 3000);
