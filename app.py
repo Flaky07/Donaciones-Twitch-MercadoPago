@@ -162,7 +162,7 @@ def overlay():
       --bg-color: rgba(15, 23, 42, 0.95);
       --border-color: rgba(99, 102, 241, 0.3);
     }
-    
+
     body {
       margin: 0;
       padding: 0;
@@ -173,14 +173,14 @@ def overlay():
       height: 100vh;
       overflow: hidden;
     }
-    
+
     .overlay-wrapper {
       position: relative;
       width: 1000px;
       height: 500px;
       margin: 0 auto;
     }
-    
+
     /* 📦 GIF arriba, sin tapar nada */
     .alert-gif {
       position: absolute;
@@ -191,7 +191,7 @@ def overlay():
       height: auto;
       z-index: 0; /* Detrás de la alerta si hiciera falta */
     }
-    
+
     /* 🟩 Alerta más abajo y sobre el gif si se superponen */
     .alert-container {
       position: absolute;
@@ -212,12 +212,12 @@ def overlay():
       transition: opacity 0.4s ease, transform 0.4s ease;
       z-index: 1;
     }
-    
+
     .alert-container.visible {
       opacity: 1;
       transform: translate(-50%, 0);
     }
-    
+
     .alert-icon {
       background-color: var(--primary-color);
       border-radius: 50%;
@@ -228,27 +228,30 @@ def overlay():
       justify-content: center;
       flex-shrink: 0;
     }
-    
+
     .alert-content {
       flex: 1;
     }
-    
+
     .alert-message {
       font-weight: 600;
       font-size: 18px;
       margin-bottom: 4px;
     }
-    
+
     .alert-amount {
       font-size: 22px;
       font-weight: 700;
       color: var(--primary-color);
     }
+    .hidden {
+        display: none;
+    }
     </style>
     </head>
     <body>
     <div class="overlay-wrapper">
-      <img class="alert-gif" id="gif" src="" alt="gif">
+      <img id="alert-gif" class="alert-gif hidden" src="" alt="gif">
       
       <div id="contenedor" class="alert-container">
         <div class="alert-icon">
@@ -307,24 +310,28 @@ def overlay():
 
     function mostrarMensaje(data) {
       const c = document.getElementById("contenedor");
-
-      // Mostrar texto
+      const gifEl = document.getElementById("gif");
+    
+      // Mostrar texto de alerta
       document.getElementById("mensaje").textContent = `${data.usuario || "anónimo"} : ${data.mensaje}`;
       document.getElementById("monto").textContent = `$${parseFloat(data.monto).toFixed(2)}`;
-
-      // Mostrar gif personalizado o uno por defecto si no viene nada
-      const gifEl = document.getElementById("gif");
-      gifEl.src = data.gif || "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeTlzb21yczh0eGVkZ3U5NHdxc2MwODY5cDdyNzk3aGxydnh4YzFpMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IXnnnVD5kyKqXRhaCR/giphy.gif";
-      gifEl.style.display = "block";
-
+    
+      // Determinar gif a usar
+      const gifURL = data.gif || "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeTlzb21yczh0eGVkZ3U5NHdxc2MwODY5cDdyNzk3aGxydnh4YzFpMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IXnnnVD5kyKqXRhaCR/giphy.gif";
+    
+      gifEl.src = gifURL;
+      gifEl.classList.remove("hidden"); // Mostrar el gif
+    
       c.classList.add("visible");
     }
-
-
+    
     function ocultarMensaje() {
+      const gifEl = document.getElementById("gif");
       document.getElementById("contenedor").classList.remove("visible");
-      document.getElementById("gif").src = "";
+      gifEl.classList.add("hidden"); // Ocultar el gif
+      gifEl.src = ""; // Evitar que cargue algo innecesario
     }
+
 
     setInterval(verificarNuevoMensaje, 3000);
     </script>
