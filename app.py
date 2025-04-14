@@ -243,7 +243,7 @@ def overlay():
     </head>
     <body>
     <div class="overlay-wrapper">
-      <img class="alert-gif" src="${data.gif_url}" alt="gif">
+      <img id="gif" class="alert-gif" src="" alt="gif">
       
       <div id="contenedor" class="alert-container">
         <div class="alert-icon">
@@ -304,6 +304,7 @@ def overlay():
       const c = document.getElementById("contenedor");
       document.getElementById("mensaje").textContent = `${data.usuario || "anónimo"} : ${data.mensaje}`;
       document.getElementById("monto").textContent = `$${parseFloat(data.monto).toFixed(2)}`;
+      document.getElementById("gif").src = data.gif || "";
       c.classList.add("visible");
     }
 
