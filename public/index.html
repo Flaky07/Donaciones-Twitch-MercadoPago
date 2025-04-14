@@ -80,6 +80,46 @@
     </div>
   </div>
 
+  <script>
+    const gifSearch = document.getElementById("gifSearch");
+    const gifResults = document.getElementById("gifResults");
+    const gifUrlInput = document.getElementById("gif_url");
+  
+    async function buscarGifs(query = "league of legends") {
+      const apiKey = window.ENV.GIF_API;
+      const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=8`;
+      const res = await fetch(url);
+      const json = await res.json();
+      mostrarResultadosGif(json.data);
+    }
+  
+    function mostrarResultadosGif(gifs) {
+      gifResults.innerHTML = "";
+      gifs.forEach(gif => {
+        const img = document.createElement("img");
+        img.src = gif.images.fixed_height_small.url;
+        img.alt = "gif";
+        img.onclick = () => {
+          gifUrlInput.value = gif.images.original.url;
+          document.querySelectorAll("#gifResults img").forEach(i => i.classList.remove("selected"));
+          img.classList.add("selected");
+        };
+        gifResults.appendChild(img);
+      });
+    }
+  
+    document.addEventListener("DOMContentLoaded", () => {
+      buscarGifs(); // Carga inicial
+    });
+  
+    gifSearch.addEventListener("input", () => {
+      const query = gifSearch.value.trim();
+      if (query.length >= 2) {
+        buscarGifs(query);
+      }
+    });
+  </script>
+
 <script>
 const soundSearch = document.getElementById("soundSearch");
 const soundResults = document.getElementById("soundResults");
