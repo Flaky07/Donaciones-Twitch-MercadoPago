@@ -251,7 +251,7 @@ def overlay():
     </head>
     <body>
     <div class="overlay-wrapper">
-      <img id="alert-gif" class="alert-gif hidden" src="" alt="gif">
+      <img id="gif" class="alert-gif" src="" alt="gif" style="display: none;">
       
       <div id="contenedor" class="alert-container">
         <div class="alert-icon">
@@ -312,24 +312,26 @@ def overlay():
       const c = document.getElementById("contenedor");
       const gifEl = document.getElementById("gif");
     
-      // Mostrar texto de alerta
+      // Mensaje de texto
       document.getElementById("mensaje").textContent = `${data.usuario || "anónimo"} : ${data.mensaje}`;
       document.getElementById("monto").textContent = `$${parseFloat(data.monto).toFixed(2)}`;
     
-      // Determinar gif a usar
+      // URL del gif o fallback
       const gifURL = data.gif || "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeTlzb21yczh0eGVkZ3U5NHdxc2MwODY5cDdyNzk3aGxydnh4YzFpMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IXnnnVD5kyKqXRhaCR/giphy.gif";
     
       gifEl.src = gifURL;
-      gifEl.classList.remove("hidden"); // Mostrar el gif
+      gifEl.style.display = "block";  // Mostrar el gif
     
-      c.classList.add("visible");
+      c.classList.add("visible");     // Mostrar la alerta
     }
     
     function ocultarMensaje() {
       const gifEl = document.getElementById("gif");
+    
+      // Ocultar gif y alerta
       document.getElementById("contenedor").classList.remove("visible");
-      gifEl.classList.add("hidden"); // Ocultar el gif
-      gifEl.src = ""; // Evitar que cargue algo innecesario
+      gifEl.style.display = "none";
+      gifEl.src = "";  // Limpieza para evitar gif congelado
     }
 
 
