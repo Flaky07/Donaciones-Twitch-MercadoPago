@@ -83,7 +83,7 @@
     const gifSearch = document.getElementById("gifSearch");
     const gifResults = document.getElementById("gifResults");
     const gifUrlInput = document.getElementById("gif_url");
-
+  
     async function buscarGifs(query = "league of legends") {
       const apiKey = window.ENV.GIF_API;
       const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=8`;
@@ -91,7 +91,7 @@
       const json = await res.json();
       mostrarResultadosGif(json.data);
     }
-
+  
     function mostrarResultadosGif(gifs) {
       gifResults.innerHTML = "";
       gifs.forEach(gif => {
@@ -106,67 +106,78 @@
         gifResults.appendChild(img);
       });
     }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      buscarGifs();
-      buscarSonidos();
-    });
-
-    gifSearch.addEventListener("input", () => {
-      const query = gifSearch.value.trim();
-      if (query.length >= 2) buscarGifs(query);
-    });
-
+  
     const soundSearch = document.getElementById("soundSearch");
     const soundResults = document.getElementById("soundResults");
     const soundUrlInput = document.getElementById("sound_url");
-
+  
     async function buscarSonidos(query = "anime") {
       try {
+        console.log("Lanzando búsqueda con query:", query);
         const res = await fetch(`${window.ENV.BACKEND_URL}/api/myinstants?q=${encodeURIComponent(query)}`);
         if (!res.ok) throw new Error("Error en backend");
         const json = await res.json();
+        console.log("Resultados recibidos:", json.data);
         mostrarResultadosSonidos(json.data);
       } catch (err) {
         console.error("Error al buscar sonidos:", err);
       }
     }
-
+  
     function mostrarResultadosSonidos(sonidos) {
       soundResults.innerHTML = "";
       sonidos.slice(0, 5).forEach((sonido, idx) => {
         const wrapper = document.createElement("div");
         wrapper.classList.add("sound-wrapper");
-      
+  
         const iframe = document.createElement("iframe");
         iframe.src = `https://www.myinstants.com/instant/${sonido.id}/embed/`;
         iframe.width = "110";
         iframe.height = "200";
         iframe.frameBorder = "0";
         iframe.scrolling = "no";
-      
+  
         const radio = document.createElement("input");
         radio.type = "radio";
         radio.name = "soundOption";
         radio.value = sonido.mp3;
-      
+  
         radio.onclick = () => {
           soundUrlInput.value = sonido.mp3;
           document.querySelectorAll(".sound-wrapper").forEach(i => i.classList.remove("selected"));
           wrapper.classList.add("selected");
         };
-      
+  
         wrapper.onclick = () => {
           radio.click();
         };
-      
+  
         wrapper.appendChild(iframe);
         wrapper.appendChild(radio);
         soundResults.appendChild(wrapper);
       });
     }
-
-
+  
+    document.addEventListener("DOMContentLoaded", () => {
+      buscarGifs();
+      buscarSonidos(); // carga inicial
+    });
+  
+    gifSearch.addEventListener("input", () => {
+      const query = gifSearch.value.trim();
+      if (query.length >= 2) buscarGifs(query);
+    });
+  
+    soundSearch.addEventListener("input", () => {
+      const query = soundSearch.value.trim();
+      console.log("Buscando audio con:", query);
+      if (query.length >= 2) {
+        buscarSonidos(query);
+      } else {
+        buscarSonidos("anime"); // fallback si está vacío o tiene 1 letra
+      }
+    });
+  
     document.getElementById("donationForm").addEventListener("submit", function (event) {
       event.preventDefault();
       const monto = document.getElementById("monto").value;
@@ -175,36 +186,36 @@
       const mensaje = document.getElementById("mensaje").value;
       const gif_url = document.getElementById("gif_url").value;
       const sonido_url = document.getElementById("sound_url").value;
-
+  
       const submitButton = document.getElementById("submitButton");
       const successDiv = document.getElementById("successMessage");
-
+  
       submitButton.disabled = true;
       successDiv.textContent = "";
-
+  
       fetch(`${window.ENV.BACKEND_URL}/crear-donacion`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ monto, usuario, mensaje, gif_url, sonido_url })
       })
-      .then(res => {
-        if (!res.ok) throw new Error("Error al enviar la donación");
-        return res.json();
-      })
-      .then(data => {
-        if (data.url) {
-          window.location.href = data.url;
-        } else {
-          successDiv.textContent = data.mensaje || "¡Gracias por tu donación!";
-        }
-      })
-      .catch(err => {
-        successDiv.textContent = "Ocurrió un error. Intenta nuevamente.";
-      })
-      .finally(() => {
-        submitButton.disabled = false;
-      });
+        .then(res => {
+          if (!res.ok) throw new Error("Error al enviar la donación");
+          return res.json();
+        })
+        .then(data => {
+          if (data.url) {
+            window.location.href = data.url;
+          } else {
+            successDiv.textContent = data.mensaje || "¡Gracias por tu donación!";
+          }
+        })
+        .catch(err => {
+          successDiv.textContent = "Ocurrió un error. Intenta nuevamente.";
+        })
+        .finally(() => {
+          submitButton.disabled = false;
+        });
     });
-  </script>
+  </script>  
 </body>
 </html>
