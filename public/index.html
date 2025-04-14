@@ -117,10 +117,8 @@
   const gifResults = document.getElementById("gifResults");
   const gifUrlInput = document.getElementById("gif_url");
 
-  const API_KEY = "dc6zaTOxFJmzC";
-
-  async function buscarGifs(query = "funny") {
-    const url = `https://api.giphy.com/v1/gifs/search?api_key=${API_KEY}&q=${encodeURIComponent(query)}&limit=8`;
+  async function buscarGifs(query = "league of legends") {
+    const url = `https://api.giphy.com/v1/gifs/search?api_key=${process.env.GIF_API}&q=${encodeURIComponent(query)}&limit=8`;
     const res = await fetch(url);
     const json = await res.json();
     mostrarResultadosGif(json.data);
