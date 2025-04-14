@@ -71,14 +71,13 @@
         </div>
       </div>
 
-      <!-- Audio Selector -->
-      <div class="gif-selector" style="justify-self: start;">
-        <input type="text" id="soundSearch" placeholder="Buscar audio..." />
-        <div id="soundResults" class="gif-grid"></div>
-        <input type="hidden" id="sound_url" />
-      </div>
+
+    <!-- Audio Selector -->
+    <div class="audio-selector">
+      <input type="text" id="soundSearch" placeholder="Buscar audio..." />
+      <div id="soundResults"></div>
+      <input type="hidden" id="audio_url" />
     </div>
-  </div>
 
   <script>
     const gifSearch = document.getElementById("gifSearch");
@@ -121,40 +120,50 @@
   </script>
 
 <script>
-const soundSearch = document.getElementById("soundSearch");
-const soundResults = document.getElementById("soundResults");
-const soundUrlInput = document.getElementById("sound_url");
+  const soundSearch = document.getElementById("soundSearch");
+  const soundResults = document.getElementById("soundResults");
+  const audioUrlInput = document.getElementById("audio_url");
 
-soundSearch.addEventListener("input", async () => {
-  const query = soundSearch.value.trim();
-  if (!query) return;
-  const res = await fetch(`https://myinstants-api.vercel.app/search?q=${encodeURIComponent(query)}`);
-  const json = await res.json();
-  mostrarResultadosSonido(json.data);
-});
+  async function buscarSonidos(query = "anime") {
+    const url = `https://myinstants-api.vercel.app/search?q=${encodeURIComponent(query)}`;
+    const res = await fetch(url);
+    const json = await res.json();
+    if (json.status === "200" && json.data.length > 0) {
+      mostrarResultadosAudio(json.data.slice(0, 5)); // los primeros 5
+    }
+  }
 
-function mostrarResultadosSonido(sounds) {
-  soundResults.innerHTML = "";
-  sounds.slice(0, 5).forEach(sound => {
-    const wrapper = document.createElement("div");
-    const iframe = document.createElement("iframe");
-    iframe.width = "110";
-    iframe.height = "200";
-    iframe.frameBorder = "0";
-    iframe.scrolling = "no";
-    iframe.src = `${sound.url}/embed/`;
-    iframe.title = sound.title;
+  function mostrarResultadosAudio(data) {
+    soundResults.innerHTML = "";
+    data.forEach(sound => {
+      const iframe = document.createElement("iframe");
+      iframe.src = `${sound.url}/embed/`;
+      iframe.width = "110";
+      iframe.height = "200";
+      iframe.frameBorder = "0";
+      iframe.scrolling = "no";
+      iframe.classList.add("sound-frame");
 
-    wrapper.appendChild(iframe);
-    wrapper.style.cursor = "pointer";
-    wrapper.onclick = () => {
-      soundUrlInput.value = sound.mp3;
-      document.querySelectorAll("#soundResults iframe").forEach(i => i.style.border = "none");
-      iframe.style.border = "3px solid #6366f1";
-    };
-    soundResults.appendChild(wrapper);
+      iframe.onclick = () => {
+        audioUrlInput.value = sound.mp3;
+        document.querySelectorAll("#soundResults iframe").forEach(i => i.classList.remove("selected"));
+        iframe.classList.add("selected");
+      };
+
+      soundResults.appendChild(iframe);
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    buscarSonidos(); // carga por defecto
   });
-}
+
+  soundSearch.addEventListener("input", () => {
+    const query = soundSearch.value.trim();
+    if (query.length >= 2) {
+      buscarSonidos(query);
+    }
+  });
 </script>
 
 <script>
