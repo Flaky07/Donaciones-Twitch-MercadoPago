@@ -238,7 +238,16 @@ def overlay():
     <body>
 
     <audio id="alert-sound" src="https://flaky07.github.io/Donaciones-Twitch-MercadoPago/static/pomelo.mp3" preload="auto"></audio>
-    <img id="gif-alerta" src="https://i.giphy.com/tM76xlB5idOYRwB0wR.webp" />
+    <img id="gif-alerta" src="https://i.giphy.com/h3WH1rqyW2bmfOVqSi.webp" style="
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 100%;
+    height: auto;
+    display: none;
+    z-index: 999;
+    "/>
 
     <div id="contenedor" class="alert-container">
       <div class="alert-icon">
