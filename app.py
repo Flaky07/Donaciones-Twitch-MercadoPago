@@ -148,67 +148,45 @@ def ultimo_mensaje():
 def overlay():
     return """
     <html><head><meta charset="utf-8"><style>
-    :root {
-      --primary-color: #6366f1;
-      --secondary-color: #4f46e5;
-      --text-color: #f8fafc;
-      --bg-color: rgba(15, 23, 42, 0.96);
-      --border-color: rgba(99, 102, 241, 0.3);
-    }
-
     body {
-      margin: 0;
-      padding: 0;
-      background: transparent;
-      color: var(--text-color);
-      font-family: 'Inter', sans-serif;
-      font-size: 16px;
-      height: 100vh;
-      width: 100vw;
+      margin: 0; padding: 0; background: transparent;
+      font-family: 'Segoe UI', sans-serif; height: 100vh;
+      display: flex; justify-content: center; align-items: center;
       overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
     }
-
+    .alert-wrapper {
+      position: relative; display: flex; flex-direction: column;
+      align-items: center;
+    }
     #gif-alerta {
       position: absolute;
-      top: 50%;
+      bottom: 100%;
+      margin-bottom: 10px;
+      max-height: 200px;
       left: 50%;
-      transform: translate(-50%, -50%);
-      width: 300px;
-      z-index: 999;
+      transform: translateX(-50%);
+      z-index: 1000;
       display: none;
     }
-
     .alert-container {
-      position: absolute;
-      bottom: 5%;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background-color: var(--bg-color);
-      backdrop-filter: blur(8px);
-      border: 1px solid var(--border-color);
+      background-color: rgba(15, 23, 42, 0.9);
+      color: #fff;
       border-radius: 12px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
       padding: 20px;
-      max-width: 90%;
-      width: 400px;
       display: flex;
-      align-items: center;
       gap: 16px;
+      align-items: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      transform: translateY(20px);
       opacity: 0;
-      transition: transform 0.5s ease, opacity 0.5s ease;
+      transition: all 0.4s ease;
     }
-
     .alert-container.visible {
-      transform: translateX(-50%) translateY(0);
+      transform: translateY(0);
       opacity: 1;
     }
-
     .alert-icon {
-      background-color: var(--primary-color);
+      background: #6366f1;
       border-radius: 50%;
       width: 48px;
       height: 48px;
@@ -217,55 +195,27 @@ def overlay():
       justify-content: center;
       flex-shrink: 0;
     }
-
-    .alert-content {
-      flex: 1;
-    }
-
-    .alert-message {
-      font-weight: 600;
-      font-size: 18px;
-      margin-bottom: 4px;
-      line-height: 1.4;
-    }
-
-    .alert-amount {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--primary-color);
-    }
+    .alert-message { font-weight: bold; font-size: 18px; }
+    .alert-amount { font-size: 22px; font-weight: bold; color: #6366f1; }
     </style></head>
     <body>
-
-    <audio id="alert-sound" src="https://flaky07.github.io/Donaciones-Twitch-MercadoPago/static/pomelo.mp3" preload="auto"></audio>
-    <img id="gif-alerta" src="https://i.giphy.com/h3WH1rqyW2bmfOVqSi.webp" style="
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    max-width: 100%;
-    height: auto;
-    display: none;
-    z-index: 999;
-    "/>
-
-    <div id="contenedor" class="alert-container">
-      <div class="alert-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
-          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" 
-          stroke-linecap="round" stroke-linejoin="round">
-          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
-          <path d="M4 2C2.8 3.7 2 5.7 2 8"></path>
-          <path d="M22 8c0-2.3-.8-4.3-2-6"></path>
-        </svg>
-      </div>
-      <div class="alert-content">
-        <div id="mensaje" class="alert-message">Esperando mensaje...</div>
-        <div id="monto" class="alert-amount">$0.00</div>
+    <div class="alert-wrapper">
+      <img id="gif-alerta" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjZkNDAxZ3IxYno0dWxyN3prNmNiaHhseHMycjRweDFudjhoazQ5eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/d5SCpPs3q9xkY7qERk/giphy.gif" alt="gif-alerta" />
+      <div id="contenedor" class="alert-container">
+        <div class="alert-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+            <path d="M4 2C2.8 3.7 2 5.7 2 8"></path>
+            <path d="M22 8c0-2.3-.8-4.3-2-6"></path>
+          </svg>
+        </div>
+        <div class="alert-content">
+          <div id="mensaje" class="alert-message">Esperando mensaje...</div>
+          <div id="monto" class="alert-amount">$0.00</div>
+        </div>
       </div>
     </div>
-
     <script>
     let queue = [];
     let mostrando = false;
@@ -275,55 +225,33 @@ def overlay():
       try {
         const res = await fetch('/ultimo-mensaje');
         const data = await res.json();
-
         if (data && data.external_reference && data.external_reference !== ultimaReferencia) {
           ultimaReferencia = data.external_reference;
-
           const yaExiste = queue.some(item => item.external_reference === data.external_reference);
           if (!yaExiste) {
             queue.push(data);
-            if (!mostrando) {
-              mostrarSiguiente();
-            }
+            if (!mostrando) mostrarSiguiente();
           }
         }
-      } catch (error) {
-        console.error("Error al verificar mensajes:", error);
-      }
+      } catch (err) { console.error(err); }
     }
 
     function mostrarSiguiente() {
-      if (queue.length === 0) {
-        mostrando = false;
-        return;
-      }
-
+      if (queue.length === 0) { mostrando = false; return; }
       mostrando = true;
       const data = queue.shift();
       mostrarMensaje(data);
-
       setTimeout(() => {
         ocultarMensaje();
-        setTimeout(() => {
-          mostrarSiguiente();
-        }, 1000);
+        setTimeout(mostrarSiguiente, 1000);
       }, 8000);
     }
 
     function mostrarMensaje(data) {
-      const contenedor = document.getElementById("contenedor");
-      const mensajeEl = document.getElementById("mensaje");
-      const montoEl = document.getElementById("monto");
-      const audio = document.getElementById("alert-sound");
-      const gif = document.getElementById("gif-alerta");
-
-      mensajeEl.textContent = `${data.usuario || "anónimo"} : ${data.mensaje || "(sin mensaje)"}`;
-      montoEl.textContent = `$${parseFloat(data.monto || 0).toFixed(2)}`;
-
-      contenedor.classList.add("visible");
-      gif.style.display = "block";
-      audio.currentTime = 0;
-      audio.play();
+      document.getElementById("mensaje").textContent = `${data.usuario || "anónimo"} : ${data.mensaje}`;
+      document.getElementById("monto").textContent = `$${parseFloat(data.monto).toFixed(2)}`;
+      document.getElementById("contenedor").classList.add("visible");
+      document.getElementById("gif-alerta").style.display = "block";
     }
 
     function ocultarMensaje() {
