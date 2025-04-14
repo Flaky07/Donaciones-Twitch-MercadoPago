@@ -295,6 +295,7 @@ def overlay():
       montoEl.textContent = `$${monto}`;
 
       contenedor.classList.add("visible");
+      document.getElementById("alert-sound").play();
     }
 
     function ocultarMensaje() {
@@ -304,6 +305,7 @@ def overlay():
     // Consulta cada 3 segundos
     setInterval(verificarNuevoMensaje, 3000);
     </script>
+    <audio id="alert-sound" src="/static/pomelo.mp3" preload="auto"></audio>
     </body></html>
     """
 

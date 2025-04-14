@@ -76,7 +76,11 @@ body {
     cursor: pointer;
     font-size: 14px;
     box-shadow: 0 0 6px rgba(0,0,0,0.3);
-}
+    display: inline-flex;        /* ✅ para alinear ícono y texto correctamente */
+    align-items: center;
+    gap: 8px;                    /* espacio entre ícono y texto */
+    width: auto;                /* ✅ que no ocupe todo el ancho */
+  }
 
 .donation-header {
     text-align: center;
