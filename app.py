@@ -23,6 +23,8 @@ def crear_donacion():
         monto = float(data["monto"])
         usuario = data["usuario"]
         mensaje = data["mensaje"]
+        gif_url = data.get("gif_url", "") 
+
         external_reference = f"{mensaje}-{int(datetime.now().timestamp())}"
 
         preference_data = {
@@ -41,7 +43,7 @@ def crear_donacion():
                 "failure": VERCEL_APP,
                 "pending": VERCEL_APP
             },
-            "external_reference": external_reference  # 👈 ya corregido
+            "external_reference": external_reference
         }
 
         res = requests.post(
@@ -65,12 +67,14 @@ def crear_donacion():
                     except json.JSONDecodeError:
                         pendientes = {}
 
+            # Guardamos también el gif
             pendientes[preference_id] = {
                 "mensaje": mensaje,
                 "monto": monto,
                 "usuario": usuario,
                 "fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "external_reference": external_reference  # 👈 también guardado
+                "external_reference": external_reference,
+                "gif": gif_url 
             }
 
             with open("pendientes.json", "w", encoding="utf-8") as f:
