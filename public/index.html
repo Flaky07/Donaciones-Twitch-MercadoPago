@@ -14,8 +14,16 @@
       <p>💜 Gracias por el apoyo 💜</p>
     </div>
 
-    <div class="content-wrapper">
-      <div class="donation-card">
+    <div class="content-wrapper" style="display: flex; gap: 24px;">
+      <!-- GIF Selector -->
+      <div style="width: 300px;">
+        <input type="hidden" id="gif_url">
+        <input type="text" id="gifSearch" placeholder="Buscar gif..." style="width: 100%; padding: 8px; margin-bottom: 10px;">
+        <div id="gifResults" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;"></div>
+      </div>
+
+      <!-- Formulario Donación -->
+      <div class="donation-card" style="flex: 1;">
         <div class="card-header">
           <h2>Realizar Donacion</h2>
         </div>
@@ -48,9 +56,7 @@
               <span class="button-content">
                 <svg class="heart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                   stroke-linecap="round" stroke-linejoin="round">
-                  <path
-                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                  </path>
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                 </svg>
                 Donar
               </span>
@@ -78,77 +84,116 @@
     </div>
   </div>
 
-  <!-- Twitch Embed -->    
-  
-  <script src="https://embed.twitch.tv/embed/v1.js"></script>
-  <script type="text/javascript">
-    const currentHost = window.location.hostname;
-    new Twitch.Embed("twitch-embed", {
-      width: 360,
-      height: 210,
-      layout: "video",
-      autoplay: true,
-      channel: window.ENV.TWITCH_CHANNEL,
-      parent: [currentHost]
-    });
-  </script>
+<script src="https://embed.twitch.tv/embed/v1.js"></script>
+<script type="text/javascript">
+  const currentHost = window.location.hostname;
+  new Twitch.Embed("twitch-embed", {
+    width: 360,
+    height: 210,
+    layout: "video",
+    autoplay: true,
+    channel: window.ENV.TWITCH_CHANNEL,
+    parent: [currentHost]
+  });
+</script>
 
-  <!-- Toggle Twitch -->
-  <script>
-    function toggleTwitch() {
-      const twitchBox = document.querySelector('.twitch-floating');
-      const showBtn = document.querySelector('.show-twitch');
+<script>
+  function toggleTwitch() {
+    const twitchBox = document.querySelector('.twitch-floating');
+    const showBtn = document.querySelector('.show-twitch');
 
-      if (twitchBox.style.display === 'none') {
-        twitchBox.style.display = 'block';
-        showBtn.style.display = 'none';
-      } else {
-        twitchBox.style.display = 'none';
-        showBtn.style.display = 'block';
-      }
+    if (twitchBox.style.display === 'none') {
+      twitchBox.style.display = 'block';
+      showBtn.style.display = 'none';
+    } else {
+      twitchBox.style.display = 'none';
+      showBtn.style.display = 'block';
     }
-  </script>
+  }
+</script>
 
-  <!-- Envío con Fetch -->
-  <script>
-    document.getElementById("donationForm").addEventListener("submit", function (event) {
-      event.preventDefault();
+<script>
+  const gifSearch = document.getElementById("gifSearch");
+  const gifResults = document.getElementById("gifResults");
+  const gifUrlInput = document.getElementById("gif_url");
 
-      const monto = document.getElementById("monto").value;
-      let usuario = document.getElementById("usuario").value;
-      if (!usuario.trim()) {
-        usuario = "anonimo";
-      }
-      const mensaje = document.getElementById("mensaje").value;
-      const submitButton = document.getElementById("submitButton");
-      const successDiv = document.getElementById("successMessage");
+  gifSearch.addEventListener("input", async () => {
+    const query = gifSearch.value.trim();
+    if (!query) return;
 
-      submitButton.disabled = true;
-      successDiv.textContent = "";
+    const API_KEY = "dc6zaTOxFJmzC";
+    const res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=${API_KEY}&q=${encodeURIComponent(query)}&limit=8`);
+    const json = await res.json();
+    mostrarResultadosGif(json.data);
+  });
 
-      fetch(`${window.ENV.BACKEND_URL}/crear-donacion`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ monto,usuario, mensaje })
-      })
-      .then(res => {
-        if (!res.ok) throw new Error("Error al enviar la donación");
-        return res.json();
-      })
-      .then(data => {
-        if (data.url) {
-          window.location.href = data.url;
-        } else {
-          successDiv.textContent = data.mensaje || "¡Gracias por tu donación!";
-        }
-      })
-      .catch(err => {
-        successDiv.textContent = "Ocurrió un error. Intenta nuevamente.";
-      })
-      .finally(() => {
-        submitButton.disabled = false;
-      });
+  async function cargarTrendingGifs() {
+    const API_KEY = "dc6zaTOxFJmzC";
+    const res = await fetch(`https://api.giphy.com/v1/gifs/trending?api_key=${API_KEY}&limit=8`);
+    const json = await res.json();
+    mostrarResultadosGif(json.data);
+  }
+
+  function mostrarResultadosGif(gifs) {
+    gifResults.innerHTML = "";
+    gifs.forEach(gif => {
+      const img = document.createElement("img");
+      img.src = gif.images.fixed_height_small.url;
+      img.style.cursor = "pointer";
+      img.style.borderRadius = "6px";
+      img.style.width = "100%";
+      img.title = "Seleccionar este gif";
+      img.onclick = () => {
+        gifUrlInput.value = gif.images.original.url;
+        document.querySelectorAll("#gifResults img").forEach(i => i.style.border = "none");
+        img.style.border = "3px solid #6366f1";
+      };
+      gifResults.appendChild(img);
     });
-  </script>
+  }
+
+  window.addEventListener("DOMContentLoaded", cargarTrendingGifs);
+</script>
+
+<script>
+  document.getElementById("donationForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const monto = document.getElementById("monto").value;
+    let usuario = document.getElementById("usuario").value;
+    if (!usuario.trim()) usuario = "anonimo";
+    const mensaje = document.getElementById("mensaje").value;
+    const gif_url = document.getElementById("gif_url").value;
+
+    const submitButton = document.getElementById("submitButton");
+    const successDiv = document.getElementById("successMessage");
+
+    submitButton.disabled = true;
+    successDiv.textContent = "";
+
+    fetch(`${window.ENV.BACKEND_URL}/crear-donacion`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ monto, usuario, mensaje, gif_url })
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("Error al enviar la donación");
+      return res.json();
+    })
+    .then(data => {
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        successDiv.textContent = data.mensaje || "¡Gracias por tu donación!";
+      }
+    })
+    .catch(err => {
+      successDiv.textContent = "Ocurrió un error. Intenta nuevamente.";
+    })
+    .finally(() => {
+      submitButton.disabled = false;
+    });
+  });
+</script>
 </body>
 </html>

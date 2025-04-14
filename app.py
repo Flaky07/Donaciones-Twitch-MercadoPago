@@ -23,8 +23,6 @@ def crear_donacion():
         monto = float(data["monto"])
         usuario = data["usuario"]
         mensaje = data["mensaje"]
-
-        # ✅ Generar external_reference único ANTES de enviarlo a MercadoPago
         external_reference = f"{mensaje}-{int(datetime.now().timestamp())}"
 
         preference_data = {
@@ -241,7 +239,7 @@ def overlay():
     </head>
     <body>
     <div class="overlay-wrapper">
-      <img class="alert-gif" src="https://i.giphy.com/h3WH1rqyW2bmfOVqSi.webp" alt="gif">
+      <img class="alert-gif" src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3dvcHp6dmNuMzBvcHNkNjA0cXpmZGxvdjZ2OXZzNm51YTFyM3FyYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/CGAGMEzYQmt555lGdZ/giphy.gif" alt="gif">
       
       <div id="contenedor" class="alert-container">
         <div class="alert-icon">

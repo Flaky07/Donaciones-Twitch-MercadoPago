@@ -3,7 +3,8 @@ export default function handler(req, res) {
   res.send(`
     window.ENV = {
       TWITCH_CHANNEL: "${process.env.TWITCH_CHANNEL}",
-      BACKEND_URL: "${process.env.BACKEND_URL}"
+      BACKEND_URL: "${process.env.BACKEND_URL}",
+      GIF_API: "${process.env.GIF_API}"
     };
   `);
 }
