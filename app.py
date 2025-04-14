@@ -162,7 +162,7 @@ def overlay():
       --bg-color: rgba(15, 23, 42, 0.95);
       --border-color: rgba(99, 102, 241, 0.3);
     }
-
+    
     body {
       margin: 0;
       padding: 0;
@@ -173,27 +173,29 @@ def overlay():
       height: 100vh;
       overflow: hidden;
     }
-
+    
     .overlay-wrapper {
       position: relative;
       width: 1000px;
       height: 500px;
       margin: 0 auto;
     }
-
+    
+    /* 📦 GIF arriba, sin tapar nada */
     .alert-gif {
       position: absolute;
-      top: -40px;
+      top: 40px; /* Espaciado desde el top */
       left: 50%;
       transform: translateX(-50%);
       max-width: 200px;
       height: auto;
-      z-index: 1;
+      z-index: 0; /* Detrás de la alerta si hiciera falta */
     }
-
+    
+    /* 🟩 Alerta más abajo y sobre el gif si se superponen */
     .alert-container {
       position: absolute;
-      top: 200px;
+      top: 220px; /* 📍 Ajustado para dejar espacio al gif */
       left: 50%;
       transform: translateX(-50%);
       background-color: var(--bg-color);
@@ -208,13 +210,14 @@ def overlay():
       gap: 16px;
       opacity: 0;
       transition: opacity 0.4s ease, transform 0.4s ease;
+      z-index: 1;
     }
-
+    
     .alert-container.visible {
       opacity: 1;
       transform: translate(-50%, 0);
     }
-
+    
     .alert-icon {
       background-color: var(--primary-color);
       border-radius: 50%;
@@ -225,17 +228,17 @@ def overlay():
       justify-content: center;
       flex-shrink: 0;
     }
-
+    
     .alert-content {
       flex: 1;
     }
-
+    
     .alert-message {
       font-weight: 600;
       font-size: 18px;
       margin-bottom: 4px;
     }
-
+    
     .alert-amount {
       font-size: 22px;
       font-weight: 700;
