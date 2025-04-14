@@ -139,7 +139,7 @@ function mostrarResultadosSonidos(sonidos) {
   soundResults.innerHTML = "";
   sonidos.slice(0, 5).forEach(sonido => {
     const iframe = document.createElement("iframe");
-    iframe.src = `${sonido.url}/embed/`;
+    iframe.src = `https://www.myinstants.com/instant/${sonido.id}/embed/`;
     iframe.width = "110";
     iframe.height = "200";
     iframe.frameBorder = "0";
