@@ -71,9 +71,12 @@ body {
 }
 
 #soundResults iframe.selected {
-  border: 3px solid #38bdf8; /* azul celeste */
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+  border: 3px solid #6366f1;
+  padding: 4px;
+  background-color: #1f1f1f;
+  border-radius: 10px;
 }
+
 
 
 .donation-header {
