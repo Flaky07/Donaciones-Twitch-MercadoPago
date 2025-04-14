@@ -120,51 +120,54 @@
   </script>
 
 <script>
-const soundSearch = document.getElementById("soundSearch");
-const soundResults = document.getElementById("soundResults");
-const soundUrlInput = document.getElementById("sound_url");
-
-async function buscarSonidos(query = "anime") {
-  try {
-    const res = await fetch(`${window.ENV.BACKEND_URL}/api/myinstants?q=${encodeURIComponent(query)}`);
-    if (!res.ok) throw new Error("Error en backend");
-    const json = await res.json();
-    mostrarResultadosSonidos(json.data);
-  } catch (err) {
-    console.error("Error al buscar sonidos:", err);
+  const soundSearch = document.getElementById("soundSearch");
+  const soundResults = document.getElementById("soundResults");
+  const soundUrlInput = document.getElementById("sound_url");
+  
+  async function buscarSonidos(query = "anime") {
+    try {
+      const res = await fetch(`${window.ENV.BACKEND_URL}/api/myinstants?q=${encodeURIComponent(query)}`);
+      if (!res.ok) throw new Error("Error en backend");
+      const json = await res.json();
+      mostrarResultadosSonidos(json.data);
+    } catch (err) {
+      console.error("Error al buscar sonidos:", err);
+    }
   }
-}
-
-function mostrarResultadosSonidos(sonidos) {
-  soundResults.innerHTML = "";
-  sonidos.slice(0, 5).forEach(sonido => {
-    const iframe = document.createElement("iframe");
-    iframe.src = `https://www.myinstants.com/instant/${sonido.id}/embed/`;
-    iframe.width = "110";
-    iframe.height = "200";
-    iframe.frameBorder = "0";
-    iframe.scrolling = "no";
-    iframe.classList.add("sound-iframe");
-    iframe.onclick = () => {
-      soundUrlInput.value = sonido.mp3;
-      document.querySelectorAll("#soundResults iframe").forEach(i => i.classList.remove("selected"));
-      iframe.classList.add("selected");
-    };
-    soundResults.appendChild(iframe);
+  
+  function mostrarResultadosSonidos(sonidos) {
+    soundResults.innerHTML = "";
+    sonidos.slice(0, 5).forEach(sonido => {
+      const iframe = document.createElement("iframe");
+      iframe.src = `https://www.myinstants.com/instant/${sonido.id}/embed/`;
+      iframe.width = "110";
+      iframe.height = "200";
+      iframe.frameBorder = "0";
+      iframe.scrolling = "no";
+      iframe.classList.add("sound-iframe");
+  
+      iframe.onclick = () => {
+        soundUrlInput.value = sonido.mp3;
+        document.querySelectorAll("#soundResults iframe").forEach(i => i.classList.remove("selected"));
+        iframe.classList.add("selected");
+      };
+  
+      soundResults.appendChild(iframe);
+    });
+  }
+  
+  document.addEventListener("DOMContentLoaded", () => {
+    buscarSonidos(); // muestra sonidos por defecto
   });
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  buscarSonidos(); // muestra sonidos por defecto
-});
-
-soundSearch.addEventListener("input", () => {
-  const query = soundSearch.value.trim();
-  if (query.length >= 2) {
-    buscarSonidos(query);
-  }
-});
-</script>
+  
+  soundSearch.addEventListener("input", () => {
+    const query = soundSearch.value.trim();
+    if (query.length >= 2) {
+      buscarSonidos(query);
+    }
+  });
+  </script>
+  
 
 <script>
 document.getElementById("donationForm").addEventListener("submit", function (event) {
@@ -173,8 +176,8 @@ document.getElementById("donationForm").addEventListener("submit", function (eve
   let usuario = document.getElementById("usuario").value;
   if (!usuario.trim()) usuario = "anonimo";
   const mensaje = document.getElementById("mensaje").value;
-  const gif_url = document.getElementById("gif_url").value;
-  const sonido_url = document.getElementById("sound_url").value;
+  const gif_url = document.getElementById("gif_url").value || "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExOTM0OTBkcWo4dHA4OXR0YTJpdmRrdHJxa280OTBkY2J0MDF0ejlzbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IXnnnVD5kyKqXRhaCR/giphy.gif";
+  const sonido_url = document.getElementById("sound_url").value || "https://donaciones-twitch-mercado-pago.vercel.app/static/pomelo.mp3";
 
   const submitButton = document.getElementById("submitButton");
   const successDiv = document.getElementById("successMessage");

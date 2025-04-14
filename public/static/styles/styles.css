@@ -70,6 +70,12 @@ body {
   border: 3px solid #6366f1;
 }
 
+#soundResults iframe.selected {
+  border: 3px solid #38bdf8; /* azul celeste */
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+
 .donation-header {
   text-align: center;
   margin-bottom: 30px;
