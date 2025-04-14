@@ -147,9 +147,7 @@ def ultimo_mensaje():
 @app.route("/overlay")
 def overlay():
     return """
-    <html>
-    <head>
-    <meta charset="utf-8">
+    <html><head><meta charset="utf-8">
     <style>
     :root {
       --primary-color: #6366f1;
@@ -159,37 +157,33 @@ def overlay():
       --border-color: rgba(99, 102, 241, 0.3);
     }
 
-    body {
+    html, body {
       margin: 0;
       padding: 0;
       background: transparent;
       font-family: 'Inter', sans-serif;
-      color: var(--text-color);
-      width: 100vw;
       height: 100vh;
       overflow: hidden;
     }
 
-    .overlay-wrapper {
+    .wrapper {
       position: relative;
-      width: 1000px;
-      height: 500px;
-      margin: 0 auto;
+      width: 100%;
+      height: 100%;
     }
 
     .alert-gif {
       position: absolute;
-      top: 0;
+      top: 10px;
       left: 50%;
       transform: translateX(-50%);
       max-width: 300px;
       height: auto;
-      z-index: 1;
     }
 
     .alert-container {
       position: absolute;
-      top: 160px;
+      bottom: 40px;
       left: 50%;
       transform: translateX(-50%);
       background-color: var(--bg-color);
@@ -199,6 +193,7 @@ def overlay():
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
       padding: 20px;
       width: 400px;
+      max-width: 90%;
       display: flex;
       align-items: center;
       gap: 16px;
@@ -208,7 +203,6 @@ def overlay():
 
     .alert-container.visible {
       opacity: 1;
-      transform: translate(-50%, 0);
     }
 
     .alert-icon {
@@ -230,6 +224,8 @@ def overlay():
       font-weight: 600;
       font-size: 18px;
       margin-bottom: 4px;
+      line-height: 1.4;
+      color: var(--text-color);
     }
 
     .alert-amount {
@@ -240,14 +236,13 @@ def overlay():
     </style>
     </head>
     <body>
-    <div class="overlay-wrapper">
-      <img class="alert-gif" src="https://i.giphy.com/h3WH1rqyW2bmfOVqSi.webp" alt="gif">
-      
+    <div class="wrapper">
+      <img id="gif" class="alert-gif" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExaXEyYjIyMXJsaHhiYW9nNHRobnp4NXRydGxwZDlvaHRtcDRsZnJncyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Ly4T7GRxxOFuX7YLAw/giphy.gif" />
       <div id="contenedor" class="alert-container">
         <div class="alert-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-               viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-               stroke-linecap="round" stroke-linejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" 
+            stroke-linecap="round" stroke-linejoin="round">
             <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
             <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
             <path d="M4 2C2.8 3.7 2 5.7 2 8"></path>
@@ -255,7 +250,7 @@ def overlay():
           </svg>
         </div>
         <div class="alert-content">
-          <div id="mensaje" class="alert-message">Esperando mensaje...</div>
+          <div id="mensaje" class="alert-message">Esperando...</div>
           <div id="monto" class="alert-amount">$0.00</div>
         </div>
       </div>
@@ -270,15 +265,20 @@ def overlay():
       try {
         const res = await fetch('/ultimo-mensaje');
         const data = await res.json();
+
         if (data && data.external_reference && data.external_reference !== ultimaReferencia) {
           ultimaReferencia = data.external_reference;
-          if (!queue.some(item => item.external_reference === data.external_reference)) {
+
+          const yaExiste = queue.some(item => item.external_reference === data.external_reference);
+          if (!yaExiste) {
             queue.push(data);
-            if (!mostrando) mostrarSiguiente();
+            if (!mostrando) {
+              mostrarSiguiente();
+            }
           }
         }
-      } catch (e) {
-        console.error("Error al verificar mensajes:", e);
+      } catch (error) {
+        console.error("Error:", error);
       }
     }
 
@@ -294,15 +294,21 @@ def overlay():
 
       setTimeout(() => {
         ocultarMensaje();
-        setTimeout(() => mostrarSiguiente(), 1000);
+        setTimeout(() => {
+          mostrarSiguiente();
+        }, 1000);
       }, 8000);
     }
 
     function mostrarMensaje(data) {
-      const c = document.getElementById("contenedor");
-      document.getElementById("mensaje").textContent = `${data.usuario || "anónimo"} : ${data.mensaje}`;
-      document.getElementById("monto").textContent = `$${parseFloat(data.monto).toFixed(2)}`;
-      c.classList.add("visible");
+      const contenedor = document.getElementById("contenedor");
+      const mensajeEl = document.getElementById("mensaje");
+      const montoEl = document.getElementById("monto");
+
+      mensajeEl.textContent = `${data.usuario || "anónimo"} : ${data.mensaje}`;
+      montoEl.textContent = `$${parseFloat(data.monto).toFixed(2)}`;
+
+      contenedor.classList.add("visible");
     }
 
     function ocultarMensaje() {
@@ -311,12 +317,8 @@ def overlay():
 
     setInterval(verificarNuevoMensaje, 3000);
     </script>
-    </body>
-    </html>
+    </body></html>
     """
-
-
-
 
 @app.route("/api/donaciones")
 def api_donaciones():
