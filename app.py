@@ -221,6 +221,7 @@ def overlay():
     }
     </style></head>
     <body>
+    <audio id="alert-sound" src="/static/pomelo.mp3" preload="auto"></audio>
     <div id="contenedor" class="alert-container">
       <div class="alert-icon">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
@@ -305,7 +306,6 @@ def overlay():
     // Consulta cada 3 segundos
     setInterval(verificarNuevoMensaje, 3000);
     </script>
-    <audio id="alert-sound" src="/static/pomelo.mp3" preload="auto"></audio>
     </body></html>
     """
 
