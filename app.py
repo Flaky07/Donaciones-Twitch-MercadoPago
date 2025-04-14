@@ -162,7 +162,7 @@ def overlay():
       --bg-color: rgba(15, 23, 42, 0.95);
       --border-color: rgba(99, 102, 241, 0.3);
     }
-
+    
     body {
       margin: 0;
       padding: 0;
@@ -173,51 +173,51 @@ def overlay():
       height: 100vh;
       overflow: hidden;
     }
-
+    
     .overlay-wrapper {
-      position: relative;
-      width: 1000px;
-      height: 500px;
-      margin: 0 auto;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      padding-top: 5vh; /* espacio para el gif */
+      box-sizing: border-box;
     }
-
-    /* 📦 GIF arriba, sin tapar nada */
+    
+    /* 📦 GIF centrado arriba */
     .alert-gif {
-      position: absolute;
-      top: 40px; /* Espaciado desde el top */
-      left: 50%;
-      transform: translateX(-50%);
-      max-width: 200px;
+      max-width: 30vw;
+      max-height: 30vh;
+      width: auto;
       height: auto;
-      z-index: 0; /* Detrás de la alerta si hiciera falta */
+      margin-bottom: 20px;
+      display: none; /* se activa desde JS */
     }
-
-    /* 🟩 Alerta más abajo y sobre el gif si se superponen */
+    
+    /* 🟩 Alerta centrada debajo del GIF */
     .alert-container {
-      position: absolute;
-      top: 220px; /* 📍 Ajustado para dejar espacio al gif */
-      left: 50%;
-      transform: translateX(-50%);
       background-color: var(--bg-color);
       backdrop-filter: blur(8px);
       border: 1px solid var(--border-color);
       border-radius: 12px;
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
       padding: 20px;
-      width: 400px;
+      width: 90%;
+      max-width: 400px;
       display: flex;
       align-items: center;
       gap: 16px;
       opacity: 0;
       transition: opacity 0.4s ease, transform 0.4s ease;
-      z-index: 1;
+      transform: translateY(40px);
     }
-
+    
     .alert-container.visible {
       opacity: 1;
-      transform: translate(-50%, 0);
+      transform: translateY(0);
     }
-
+    
     .alert-icon {
       background-color: var(--primary-color);
       border-radius: 50%;
@@ -228,26 +228,55 @@ def overlay():
       justify-content: center;
       flex-shrink: 0;
     }
-
+    
     .alert-content {
       flex: 1;
     }
-
+    
     .alert-message {
       font-weight: 600;
       font-size: 18px;
       margin-bottom: 4px;
     }
-
+    
     .alert-amount {
       font-size: 22px;
       font-weight: 700;
       color: var(--primary-color);
     }
+    
     .hidden {
-        display: none;
+      display: none;
+    }
+    
+    /* 🔁 Responsive fallback para espacios más chicos en OBS */
+    @media screen and (max-width: 500px) {
+      .alert-gif {
+        max-width: 60vw;
+      }
+    
+      .alert-container {
+        flex-direction: column;
+        text-align: center;
+        padding: 14px;
+        gap: 12px;
+      }
+    
+      .alert-icon {
+        width: 36px;
+        height: 36px;
+      }
+    
+      .alert-message {
+        font-size: 16px;
+      }
+    
+      .alert-amount {
+        font-size: 18px;
+      }
     }
     </style>
+
     </head>
     <body>
     <div class="overlay-wrapper">
