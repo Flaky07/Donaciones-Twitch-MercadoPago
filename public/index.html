@@ -14,16 +14,16 @@
       <p>💜 Gracias por el apoyo 💜</p>
     </div>
 
-    <div class="content-wrapper" style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; align-items: flex-start;">
+    <div class="content-wrapper">
       <!-- GIF Selector -->
-      <div class="gif-selector" style="justify-self: end;">
+      <div class="gif-selector">
         <input type="text" id="gifSearch" placeholder="Buscar gif..." />
         <div id="gifResults" class="gif-grid"></div>
         <input type="hidden" id="gif_url" />
       </div>
 
       <!-- Formulario Donación -->
-      <div class="donation-card" style="max-width: 460px;">
+      <div class="donation-card">
         <div class="card-header">
           <h2>Realizar Donacion</h2>
         </div>
@@ -54,8 +54,7 @@
 
             <button type="submit" id="submitButton">
               <span class="button-content">
-                <svg class="heart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round">
+                <svg class="heart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                 </svg>
                 Donar
@@ -71,19 +70,20 @@
         </div>
       </div>
 
-
-    <!-- Audio Selector -->
-    <div class="audio-selector">
-      <input type="text" id="soundSearch" placeholder="Buscar audio..." />
-      <div id="soundResults"></div>
-      <input type="hidden" id="audio_url" />
+      <!-- Audio Selector -->
+      <div class="audio-selector">
+        <input type="text" id="soundSearch" placeholder="Buscar audio..." />
+        <div id="soundResults"></div>
+        <input type="hidden" id="sound_url" />
+      </div>
     </div>
+  </div>
 
   <script>
     const gifSearch = document.getElementById("gifSearch");
     const gifResults = document.getElementById("gifResults");
     const gifUrlInput = document.getElementById("gif_url");
-  
+
     async function buscarGifs(query = "league of legends") {
       const apiKey = window.ENV.GIF_API;
       const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=8`;
@@ -91,7 +91,7 @@
       const json = await res.json();
       mostrarResultadosGif(json.data);
     }
-  
+
     function mostrarResultadosGif(gifs) {
       gifResults.innerHTML = "";
       gifs.forEach(gif => {
@@ -106,108 +106,99 @@
         gifResults.appendChild(img);
       });
     }
-  
+
     document.addEventListener("DOMContentLoaded", () => {
-      buscarGifs(); // Carga inicial
+      buscarGifs();
+      buscarSonidos();
     });
-  
+
     gifSearch.addEventListener("input", () => {
       const query = gifSearch.value.trim();
-      if (query.length >= 2) {
-        buscarGifs(query);
+      if (query.length >= 2) buscarGifs(query);
+    });
+
+    const soundSearch = document.getElementById("soundSearch");
+    const soundResults = document.getElementById("soundResults");
+    const soundUrlInput = document.getElementById("sound_url");
+
+    async function buscarSonidos(query = "anime") {
+      try {
+        const res = await fetch(`${window.ENV.BACKEND_URL}/api/myinstants?q=${encodeURIComponent(query)}`);
+        if (!res.ok) throw new Error("Error en backend");
+        const json = await res.json();
+        mostrarResultadosSonidos(json.data);
+      } catch (err) {
+        console.error("Error al buscar sonidos:", err);
       }
+    }
+
+    function mostrarResultadosSonidos(sonidos) {
+      soundResults.innerHTML = "";
+      sonidos.slice(0, 5).forEach(sonido => {
+        const wrapper = document.createElement("div");
+        wrapper.classList.add("sound-wrapper");
+
+        const iframe = document.createElement("iframe");
+        iframe.src = `https://www.myinstants.com/instant/${sonido.id}/embed/`;
+        iframe.width = "110";
+        iframe.height = "200";
+        iframe.frameBorder = "0";
+        iframe.scrolling = "no";
+
+        wrapper.onclick = () => {
+          soundUrlInput.value = sonido.mp3;
+          document.querySelectorAll(".sound-wrapper").forEach(i => i.classList.remove("selected"));
+          wrapper.classList.add("selected");
+        };
+
+        wrapper.appendChild(iframe);
+        soundResults.appendChild(wrapper);
+      });
+    }
+
+    soundSearch.addEventListener("input", () => {
+      const query = soundSearch.value.trim();
+      if (query.length >= 2) buscarSonidos(query);
+    });
+
+    document.getElementById("donationForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      const monto = document.getElementById("monto").value;
+      let usuario = document.getElementById("usuario").value;
+      if (!usuario.trim()) usuario = "anonimo";
+      const mensaje = document.getElementById("mensaje").value;
+      const gif_url = document.getElementById("gif_url").value || "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExOTM0OTBkcWo4dHA4OXR0YTJpdmRrdHJxa280OTBkY2J0MDF0ejlzbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IXnnnVD5kyKqXRhaCR/giphy.gif";
+      const sonido_url = document.getElementById("sound_url").value || "https://donaciones-twitch-mercado-pago.vercel.app/static/pomelo.mp3";
+
+      const submitButton = document.getElementById("submitButton");
+      const successDiv = document.getElementById("successMessage");
+
+      submitButton.disabled = true;
+      successDiv.textContent = "";
+
+      fetch(`${window.ENV.BACKEND_URL}/crear-donacion`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ monto, usuario, mensaje, gif_url, sonido_url })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Error al enviar la donación");
+        return res.json();
+      })
+      .then(data => {
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          successDiv.textContent = data.mensaje || "¡Gracias por tu donación!";
+        }
+      })
+      .catch(err => {
+        successDiv.textContent = "Ocurrió un error. Intenta nuevamente.";
+      })
+      .finally(() => {
+        submitButton.disabled = false;
+      });
     });
   </script>
-
-<script>
-  const soundSearch = document.getElementById("soundSearch");
-  const soundResults = document.getElementById("soundResults");
-  const soundUrlInput = document.getElementById("sound_url");
-  
-  async function buscarSonidos(query = "anime") {
-    try {
-      const res = await fetch(`${window.ENV.BACKEND_URL}/api/myinstants?q=${encodeURIComponent(query)}`);
-      if (!res.ok) throw new Error("Error en backend");
-      const json = await res.json();
-      mostrarResultadosSonidos(json.data);
-    } catch (err) {
-      console.error("Error al buscar sonidos:", err);
-    }
-  }
-  
-  function mostrarResultadosSonidos(sonidos) {
-    soundResults.innerHTML = "";
-    sonidos.slice(0, 5).forEach(sonido => {
-      const iframe = document.createElement("iframe");
-      iframe.src = `https://www.myinstants.com/instant/${sonido.id}/embed/`;
-      iframe.width = "110";
-      iframe.height = "200";
-      iframe.frameBorder = "0";
-      iframe.scrolling = "no";
-      iframe.classList.add("sound-iframe");
-  
-      iframe.onclick = () => {
-        soundUrlInput.value = sonido.mp3;
-        document.querySelectorAll("#soundResults iframe").forEach(i => i.classList.remove("selected"));
-        iframe.classList.add("selected");
-      };
-  
-      soundResults.appendChild(iframe);
-    });
-  }
-  
-  document.addEventListener("DOMContentLoaded", () => {
-    buscarSonidos(); // muestra sonidos por defecto
-  });
-  
-  soundSearch.addEventListener("input", () => {
-    const query = soundSearch.value.trim();
-    if (query.length >= 2) {
-      buscarSonidos(query);
-    }
-  });
-  </script>
-  
-
-<script>
-document.getElementById("donationForm").addEventListener("submit", function (event) {
-  event.preventDefault();
-  const monto = document.getElementById("monto").value;
-  let usuario = document.getElementById("usuario").value;
-  if (!usuario.trim()) usuario = "anonimo";
-  const mensaje = document.getElementById("mensaje").value;
-  const gif_url = document.getElementById("gif_url").value || "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExOTM0OTBkcWo4dHA4OXR0YTJpdmRrdHJxa280OTBkY2J0MDF0ejlzbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IXnnnVD5kyKqXRhaCR/giphy.gif";
-  const sonido_url = document.getElementById("sound_url").value || "https://donaciones-twitch-mercado-pago.vercel.app/static/pomelo.mp3";
-
-  const submitButton = document.getElementById("submitButton");
-  const successDiv = document.getElementById("successMessage");
-
-  submitButton.disabled = true;
-  successDiv.textContent = "";
-
-  fetch(`${window.ENV.BACKEND_URL}/crear-donacion`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ monto, usuario, mensaje, gif_url, sonido_url })
-  })
-  .then(res => {
-    if (!res.ok) throw new Error("Error al enviar la donación");
-    return res.json();
-  })
-  .then(data => {
-    if (data.url) {
-      window.location.href = data.url;
-    } else {
-      successDiv.textContent = data.mensaje || "¡Gracias por tu donación!";
-    }
-  })
-  .catch(err => {
-    successDiv.textContent = "Ocurrió un error. Intenta nuevamente.";
-  })
-  .finally(() => {
-    submitButton.disabled = false;
-  });
-});
-</script>
 </body>
 </html>

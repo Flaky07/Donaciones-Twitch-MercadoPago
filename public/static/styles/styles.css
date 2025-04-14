@@ -66,18 +66,12 @@ body {
 }
 
 #gifResults img.selected,
-#soundResults iframe.selected {
+.sound-wrapper.selected {
   border: 3px solid #6366f1;
-}
-
-#soundResults iframe.selected {
-  border: 3px solid #6366f1;
+  border-radius: 10px;
   padding: 4px;
   background-color: #1f1f1f;
-  border-radius: 10px;
 }
-
-
 
 .donation-header {
   text-align: center;
