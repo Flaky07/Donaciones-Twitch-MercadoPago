@@ -280,7 +280,8 @@ def overlay():
     </head>
     <body>
     <div class="overlay-wrapper">
-      <img id="gif" class="alert-gif" src="" alt="gif" style="display: none;">
+    <audio id="audioDonacion" src="https://donaciones-twitch-mercado-pago.vercel.app/static/pomelo.mp3"></audio>
+    <img id="gif" class="alert-gif" src="" alt="gif" style="display: none;">
       
       <div id="contenedor" class="alert-container">
         <div class="alert-icon">
@@ -340,6 +341,10 @@ def overlay():
     function mostrarMensaje(data) {
       const c = document.getElementById("contenedor");
       const gifEl = document.getElementById("gif");
+
+      const audio = document.getElementById("audioDonacion");
+      audio.currentTime = 0;
+      audio.play().catch(e => console.warn("Audio no pudo reproducirse automáticamente:", e));
     
       // Mensaje de texto
       document.getElementById("mensaje").textContent = `${data.usuario || "anónimo"} : ${data.mensaje}`;
