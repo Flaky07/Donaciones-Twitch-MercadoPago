@@ -147,46 +147,72 @@ def ultimo_mensaje():
 @app.route("/overlay")
 def overlay():
     return """
-    <html><head><meta charset="utf-8"><style>
+    <html>
+    <head>
+    <meta charset="utf-8">
+    <style>
+    :root {
+      --primary-color: #6366f1;
+      --secondary-color: #4f46e5;
+      --text-color: #f8fafc;
+      --bg-color: rgba(15, 23, 42, 0.95);
+      --border-color: rgba(99, 102, 241, 0.3);
+    }
+
     body {
-      margin: 0; padding: 0; background: transparent;
-      font-family: 'Segoe UI', sans-serif; height: 100vh;
-      display: flex; justify-content: center; align-items: center;
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-color);
+      width: 100vw;
+      height: 100vh;
       overflow: hidden;
     }
-    .alert-wrapper {
-      position: relative; display: flex; flex-direction: column;
-      align-items: center;
+
+    .overlay-wrapper {
+      position: relative;
+      width: 1000px;
+      height: 500px;
+      margin: 0 auto;
     }
-    #gif-alerta {
+
+    .alert-gif {
       position: absolute;
-      bottom: 100%;
-      margin-bottom: 10px;
-      max-height: 200px;
+      top: 0;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 1000;
-      display: none;
+      max-width: 300px;
+      height: auto;
+      z-index: 1;
     }
+
     .alert-container {
-      background-color: rgba(15, 23, 42, 0.9);
-      color: #fff;
+      position: absolute;
+      top: 160px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--bg-color);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-color);
       border-radius: 12px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
       padding: 20px;
+      width: 400px;
       display: flex;
-      gap: 16px;
       align-items: center;
-      box-shadow: 0 0 20px rgba(0,0,0,0.4);
-      transform: translateY(20px);
+      gap: 16px;
       opacity: 0;
-      transition: all 0.4s ease;
+      transition: opacity 0.4s ease, transform 0.4s ease;
     }
+
     .alert-container.visible {
-      transform: translateY(0);
       opacity: 1;
+      transform: translate(-50%, 0);
     }
+
     .alert-icon {
-      background: #6366f1;
+      background-color: var(--primary-color);
       border-radius: 50%;
       width: 48px;
       height: 48px;
@@ -195,15 +221,33 @@ def overlay():
       justify-content: center;
       flex-shrink: 0;
     }
-    .alert-message { font-weight: bold; font-size: 18px; }
-    .alert-amount { font-size: 22px; font-weight: bold; color: #6366f1; }
-    </style></head>
+
+    .alert-content {
+      flex: 1;
+    }
+
+    .alert-message {
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .alert-amount {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    </style>
+    </head>
     <body>
-    <div class="alert-wrapper">
-      <img id="gif-alerta" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjZkNDAxZ3IxYno0dWxyN3prNmNiaHhseHMycjRweDFudjhoazQ5eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/d5SCpPs3q9xkY7qERk/giphy.gif" alt="gif-alerta" />
+    <div class="overlay-wrapper">
+      <img class="alert-gif" src="https://i.giphy.com/h3WH1rqyW2bmfOVqSi.webp" alt="gif">
+      
       <div id="contenedor" class="alert-container">
         <div class="alert-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+               viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
             <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
             <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
             <path d="M4 2C2.8 3.7 2 5.7 2 8"></path>
@@ -216,6 +260,7 @@ def overlay():
         </div>
       </div>
     </div>
+
     <script>
     let queue = [];
     let mostrando = false;
@@ -227,42 +272,49 @@ def overlay():
         const data = await res.json();
         if (data && data.external_reference && data.external_reference !== ultimaReferencia) {
           ultimaReferencia = data.external_reference;
-          const yaExiste = queue.some(item => item.external_reference === data.external_reference);
-          if (!yaExiste) {
+          if (!queue.some(item => item.external_reference === data.external_reference)) {
             queue.push(data);
             if (!mostrando) mostrarSiguiente();
           }
         }
-      } catch (err) { console.error(err); }
+      } catch (e) {
+        console.error("Error al verificar mensajes:", e);
+      }
     }
 
     function mostrarSiguiente() {
-      if (queue.length === 0) { mostrando = false; return; }
+      if (queue.length === 0) {
+        mostrando = false;
+        return;
+      }
+
       mostrando = true;
       const data = queue.shift();
       mostrarMensaje(data);
+
       setTimeout(() => {
         ocultarMensaje();
-        setTimeout(mostrarSiguiente, 1000);
+        setTimeout(() => mostrarSiguiente(), 1000);
       }, 8000);
     }
 
     function mostrarMensaje(data) {
+      const c = document.getElementById("contenedor");
       document.getElementById("mensaje").textContent = `${data.usuario || "anónimo"} : ${data.mensaje}`;
       document.getElementById("monto").textContent = `$${parseFloat(data.monto).toFixed(2)}`;
-      document.getElementById("contenedor").classList.add("visible");
-      document.getElementById("gif-alerta").style.display = "block";
+      c.classList.add("visible");
     }
 
     function ocultarMensaje() {
       document.getElementById("contenedor").classList.remove("visible");
-      document.getElementById("gif-alerta").style.display = "none";
     }
 
     setInterval(verificarNuevoMensaje, 3000);
     </script>
-    </body></html>
+    </body>
+    </html>
     """
+
 
 
 
