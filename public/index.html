@@ -120,50 +120,50 @@
   </script>
 
 <script>
-  const soundSearch = document.getElementById("soundSearch");
-  const soundResults = document.getElementById("soundResults");
-  const audioUrlInput = document.getElementById("audio_url");
+const soundSearch = document.getElementById("soundSearch");
+const soundResults = document.getElementById("soundResults");
+const soundUrlInput = document.getElementById("sound_url");
 
-  async function buscarSonidos(query = "anime") {
-    const url = `https://myinstants-api.vercel.app/search?q=${encodeURIComponent(query)}`;
-    const res = await fetch(url);
+async function buscarSonidos(query = "anime") {
+  try {
+    const res = await fetch(`${window.ENV.BACKEND_URL}/api/myinstants?q=${encodeURIComponent(query)}`);
+    if (!res.ok) throw new Error("Error en backend");
     const json = await res.json();
-    if (json.status === "200" && json.data.length > 0) {
-      mostrarResultadosAudio(json.data.slice(0, 5)); // los primeros 5
-    }
+    mostrarResultadosSonidos(json.data);
+  } catch (err) {
+    console.error("Error al buscar sonidos:", err);
   }
+}
 
-  function mostrarResultadosAudio(data) {
-    soundResults.innerHTML = "";
-    data.forEach(sound => {
-      const iframe = document.createElement("iframe");
-      iframe.src = `${sound.url}/embed/`;
-      iframe.width = "110";
-      iframe.height = "200";
-      iframe.frameBorder = "0";
-      iframe.scrolling = "no";
-      iframe.classList.add("sound-frame");
+function mostrarResultadosSonidos(sonidos) {
+  soundResults.innerHTML = "";
+  sonidos.slice(0, 5).forEach(sonido => {
+    const iframe = document.createElement("iframe");
+    iframe.src = `${sonido.url}/embed/`;
+    iframe.width = "110";
+    iframe.height = "200";
+    iframe.frameBorder = "0";
+    iframe.scrolling = "no";
+    iframe.classList.add("sound-iframe");
+    iframe.onclick = () => {
+      soundUrlInput.value = sonido.mp3;
+      document.querySelectorAll("#soundResults iframe").forEach(i => i.classList.remove("selected"));
+      iframe.classList.add("selected");
+    };
+    soundResults.appendChild(iframe);
+  });
+}
 
-      iframe.onclick = () => {
-        audioUrlInput.value = sound.mp3;
-        document.querySelectorAll("#soundResults iframe").forEach(i => i.classList.remove("selected"));
-        iframe.classList.add("selected");
-      };
+document.addEventListener("DOMContentLoaded", () => {
+  buscarSonidos(); // muestra sonidos por defecto
+});
 
-      soundResults.appendChild(iframe);
-    });
+soundSearch.addEventListener("input", () => {
+  const query = soundSearch.value.trim();
+  if (query.length >= 2) {
+    buscarSonidos(query);
   }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    buscarSonidos(); // carga por defecto
-  });
-
-  soundSearch.addEventListener("input", () => {
-    const query = soundSearch.value.trim();
-    if (query.length >= 2) {
-      buscarSonidos(query);
-    }
-  });
+});
 </script>
 
 <script>

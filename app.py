@@ -16,6 +16,21 @@ CORS(app, resources={r"/*": {"origins": VERCEL_APP}})
 def index():
     return "Backend Online"
 
+@app.route('/api/myinstants')
+def proxy_myinstants():
+    query = request.args.get('q')
+    if not query:
+        return jsonify({"error": "Falta el parámetro 'q'"}), 400
+
+    try:
+        url = f'https://myinstants-api.vercel.app/search?q={query}'
+        response = requests.get(url)
+        response.raise_for_status()
+        return jsonify(response.json())
+    except Exception as e:
+        return jsonify({"error": "Error al obtener sonidos", "details": str(e)}), 500
+
+
 @app.route("/crear-donacion", methods=["POST"])
 def crear_donacion():
     try:
