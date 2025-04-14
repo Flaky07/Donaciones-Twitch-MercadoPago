@@ -117,18 +117,14 @@
   const gifResults = document.getElementById("gifResults");
   const gifUrlInput = document.getElementById("gif_url");
 
-  const GIPHY_API_KEY = "dc6zaTOxFJmzC";
-
-  async function buscarGifs(query = "popular") {
-    const url = `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(query)}&limit=8`;
-    try {
-      const res = await fetch(url);
-      const json = await res.json();
-      mostrarResultadosGif(json.data);
-    } catch (error) {
-      console.error("Error al cargar GIFs:", error);
-    }
+    async function buscarGifs(query = "league of legends") {
+    const apiKey = window.ENV.GIF_API;
+    const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=8`;
+    const res = await fetch(url);
+    const json = await res.json();
+    mostrarResultadosGif(json.data);
   }
+
 
   function mostrarResultadosGif(gifs) {
     gifResults.innerHTML = "";
