@@ -1,293 +1,406 @@
 /* Reset and base */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Añade al principio de tu CSS */
+html,
+body {
+    overflow-y: hidden; /* Previene scroll horizontal en toda la página */
+    width: 100%;
 }
 
 body {
-  background-color: #242325;
-  color: white;
-  line-height: 1.6;
+    background-color: #242325;
+    color: white;
+    line-height: 1.6;
+    background-image: url(/public/static/img/fondo.png);
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 .container {
-  max-width: 1200px;
-  margin: 40px auto;
-  padding: 0 20px;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    width: 100%;
+    position: relative;
 }
 
 .content-wrapper {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 30px;
-  align-items: start;
-  margin-top: 30px;
+    display: grid;
+    grid-template-columns: 1fr minmax(auto, 600px) 1fr; /* Ajustado a 600px */
+    gap: 30px;
+    align-items: start;
+    width: 100%; /* Asegura que no exceda el contenedor */
+}
+
+.separator {
+    background-color: #26114d;
+    border-radius: 25px;
+}
+
+.donation-card {
+    padding: 40px;
+    background-color: #26114d;
 }
 
 /* Shared styles for gif/audio selectors */
 .gif-selector,
 .audio-selector {
-  width: 280px;
-  display: flex;
-  flex-direction: column;
+    width: 280px;
+    display: flex;
+    flex-direction: column;
 }
 
 #gifSearch,
 #soundSearch {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: #26114d;
+    border-color: #6642a9;
 }
 
-#gifResults,
+#gifResults img,
 #soundResults {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 10px;
 }
 
 #gifResults img,
 .sound-wrapper {
-  width: 100%;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    max-width: 100%;
+    height: auto;
 }
 
 #gifResults img:hover,
 .sound-wrapper:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 #gifResults img.selected,
 .sound-wrapper.selected {
-  border: 3px solid #6366f1;
-  border-radius: 10px;
-  padding: 4px;
-  background-color: #1f1f1f;
+    border: 3px solid #6366f1;
+    border-radius: 10px;
+    padding: 4px;
+    background-color: #1f1f1f;
 }
 
 .sound-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
 }
 
 .sound-wrapper input[type="radio"] {
-  accent-color: #6366f1;
-  transform: scale(1.1);
-  cursor: pointer;
+    accent-color: #6366f1;
+    transform: scale(1.1);
+    cursor: pointer;
 }
 
 .donation-header {
-  text-align: center;
-  margin-bottom: 30px;
+    text-align: center;
+    margin-bottom: 30px;
 }
 
 .donation-header h1 {
-  font-size: 28px;
-  color: white;
-  margin-bottom: 8px;
+    font-size: 40px;
+    color: white;
 }
 
 .donation-header p {
-  color: #718096;
+    color: white;
+}
+
+.logo-twitch {
+    width: 50px;
+    animation: twitchPulse 2s infinite; /* 2s de duración, se repite infinitamente */
+    transition: all 0.3s ease;
+}
+
+.dontation-header-mod {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
 .donation-card {
-  width: 460px;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+    width: 550px; /* Cambiado de 460px a 600px */
+    background-color: #1e0c3f;
+    border-radius: 25px;
+    box-shadow: -5px -5px 73px -3px rgba(0, 0, 0, 0.42);
+    overflow: hidden;
 }
 
 .card-header {
-  padding: 24px;
-  border-bottom: 1px solid #e2e8f0;
+    padding: 5px;
+    border-bottom: 1px solid #e2e8f015;
 }
 
 .card-header h2 {
-  font-size: 20px;
-  margin-bottom: 8px;
-  color: #2d3748;
+    font-size: 20px;
+    color: #ededed;
+    margin-left: 20px;
 }
 
 .card-body {
-  padding: 24px;
+    padding: 24px;
 }
 
 .card-footer {
-  padding: 16px 24px;
-  border-top: 1px solid #e2e8f0;
-  text-align: center;
+    margin-top: 20px;
+    margin-bottom: -15px;
+    padding: 5px 24px;
+    text-align: center;
 }
 
 .card-footer p {
-  font-size: 12px;
-  color: #718096;
+    font-size: 12px;
+    color: #ededed;
+}
+
+a {
+    text-decoration: none;
+    color: #8a5ce0;
+}
+
+.card-footer:hover p {
+    color: #ffffff; /* Cambia color del texto normal al hacer hover */
+}
+
+.card-footer:hover a {
+    color: #a4243b;
+    transition: color 0.3s ease; /* Transición solo para el enlace */
+}
+
+.mp-flex {
+    display: flex;
+    justify-content: center;
+}
+
+.mp-logo {
+    width: 300px;
+    margin-top: -30px;
+    margin-bottom: -70px;
 }
 
 .form-group {
-  margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: #4a5568;
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #ededed;
 }
 
 .input-wrapper {
-  position: relative;
+    position: relative;
 }
 
 .currency-symbol {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #718096;
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #718096;
 }
 
-input, textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  font-size: 16px;
-  transition: border-color 0.3s;
+input,
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s;
 }
 
 input {
-  padding-left: 28px;
+    padding-left: 28px;
 }
 
-input:focus, textarea:focus {
-  outline: none;
-  border-color: #6e1727;
-  box-shadow: 0 0 0 3px rgba(82, 20, 10, 0.15);
+input:focus,
+textarea:focus {
+    outline: none;
+    border-color: #6e1727;
+    box-shadow: 0 0 0 3px rgba(82, 20, 10, 0.15);
+}
+
+.input-color {
+    background-color: transparent; /* usa el fondo del contenedor */
+    color: inherit;
+    border-color: #402178;
 }
 
 small {
-  display: block;
-  margin-top: 6px;
-  font-size: 12px;
-  color: #718096;
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #ededed;
 }
 
 button {
-  display: block;
-  width: 100%;
-  padding: 14px;
-  background-color: #A4243B;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s;
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background-color: #9146ff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.2s, transform 0.2s;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
 }
 
 button:hover {
-  background-color: #6e1727;
+    transform: scale(105%);
+}
+
+button:active {
+    background-color: #43b826;
+    transform: scale(95%);
 }
 
 button:disabled {
-  background-color: #a0aec0;
-  cursor: not-allowed;
+    background-color: #a0aec0;
+    cursor: not-allowed;
+}
+
+button:disabled:hover {
+    background-color: #a0aec0;
+    cursor: not-allowed;
+    transform: scale(100%);
 }
 
 .button-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .heart-icon {
-  width: 16px;
-  height: 16px;
+    width: 16px;
+    height: 16px;
 }
 
 .error-message {
-  color: #e53e3e;
-  font-size: 12px;
-  margin-top: 6px;
-  min-height: 18px;
+    color: #e53e3e;
+    font-size: 12px;
+    margin-top: 6px;
+    min-height: 18px;
 }
 
 .twitch-floating {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 360px;
-  max-width: 90vw;
-  z-index: 999;
-  border-radius: 8px;
-  overflow: hidden;
-  background-color: #000;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 360px;
+    max-width: 90vw;
+    z-index: 999;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .twitch-close-wrapper {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  z-index: 1001;
-  pointer-events: auto;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    z-index: 1001;
+    pointer-events: auto;
 }
 
 .close-twitch {
-  background: rgba(0,0,0,0.4);
-  color: white;
-  border: none;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-  padding: 2px 6px;
-  border-radius: 4px;
-  pointer-events: all;
+    background: rgba(0, 0, 0, 0.4);
+    color: white;
+    border: none;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    pointer-events: all;
 }
 
 .show-twitch {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 998;
-  padding: 10px 16px;
-  background-color: #A4243B;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  box-shadow: 0 0 6px rgba(0,0,0,0.3);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  width: auto;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 998;
+    padding: 10px 16px;
+    background-color: #a4243b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: auto;
+}
+
+@keyframes twitchPulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Efecto adicional al hacer hover */
+.logo-twitch:hover {
+    animation: none; /* Detiene la animación en hover */
+    transform: scale(1.2) rotate(5deg);
+    filter: drop-shadow(0 0 5px #9147ff); /* Efecto de brillo violeta */
 }
 
 @media (max-width: 1024px) {
-  .content-wrapper {
-    grid-template-columns: 1fr;
-    justify-items: center;
-  }
+    .content-wrapper {
+        grid-template-columns: 1fr;
+        justify-items: center;
+    }
 
-  .gif-selector,
-  .audio-selector,
-  .donation-card {
-    width: 100%;
-    max-width: 500px;
-  }
+    .gif-selector,
+    .audio-selector,
+    .donation-card {
+        width: 100%;
+        max-width: 500px;
+    }
+
+    html,
+    body {
+        overflow-y: auto;
+        width: 100%;
+    }
 }
