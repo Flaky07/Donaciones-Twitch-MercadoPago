@@ -1,221 +1,314 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Donaciones MercadoPago</title>
-  <link rel="stylesheet" href="static/styles/styles.css">
-  <script src="api/config.js"></script>
-</head>
-<body>
-  <div class="container">
-    <div class="donation-header">
-      <h1>Donaciones - MercadoPago</h1>
-      <p>💜 Gracias por el apoyo 💜</p>
-    </div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Donaciones MercadoPago</title>
+        <link rel="stylesheet" href="static/styles/styles.css" />
+        <script src="api/config.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="content-wrapper">
+                <!-- GIF Selector -->
+                <div class="gif-selector">
+                    <input
+                        type="text"
+                        id="gifSearch"
+                        placeholder="Buscar gif..."
+                        class="input-color --input-color-mod"
+                    />
+                    <div id="gifResults" class="gif-grid"></div>
+                    <input type="hidden" id="gif_url" />
+                </div>
+                <!-- Formulario Donación -->
+                <div class="donation-card">
+                    <div class="donation-header">
+                        <div class="dontation-header-mod">
+                            <h1>DONACIONES</h1>
+                            <img
+                                src="/public/static/img/twitch-logo.png"
+                                alt="logo-twitch"
+                                class="logo-twitch"
+                            />
+                        </div>
+                        <p>💜 Gracias por el apoyo 💜</p>
+                    </div>
+                    <div class="separator">
+                        <div class="card-header">
+                            <h2>Realizar Donación</h2>
+                        </div>
 
-    <div class="content-wrapper">
-      <!-- GIF Selector -->
-      <div class="gif-selector">
-        <input type="text" id="gifSearch" placeholder="Buscar gif..." />
-        <div id="gifResults" class="gif-grid"></div>
-        <input type="hidden" id="gif_url" />
-      </div>
+                        <div class="card-body">
+                            <form id="donationForm">
+                                <div class="form-group">
+                                    <label for="monto">Monto (ARS)</label>
+                                    <div class="input-wrapper">
+                                        <span class="currency-symbol">$</span>
+                                        <input
+                                            type="number"
+                                            id="monto"
+                                            name="monto"
+                                            required
+                                            min="500"
+                                            placeholder="500"
+                                            class="input-color"
+                                        />
+                                    </div>
+                                    <small>Ingresa el monto</small>
+                                    <div
+                                        class="error-message"
+                                        id="amountError"
+                                    ></div>
+                                </div>
 
-      <!-- Formulario Donación -->
-      <div class="donation-card">
-        <div class="card-header">
-          <h2>Realizar Donacion</h2>
+                                <div class="form-group">
+                                    <label for="usuario">Usuario</label>
+                                    <input
+                                        type="text"
+                                        id="usuario"
+                                        name="usuario"
+                                        placeholder="anonimo"
+                                        class="input-color"
+                                    />
+                                    <small
+                                        >Deja vacío para donar como
+                                        anónimo</small
+                                    >
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="mensaje">Mensaje</label>
+                                    <input
+                                        type="text"
+                                        id="mensaje"
+                                        name="mensaje"
+                                        required
+                                        maxlength="35"
+                                        placeholder="mensaje..."
+                                        class="input-color"
+                                    />
+                                    <small
+                                        >El mensaje será mostrado en el
+                                        stream</small
+                                    >
+                                </div>
+
+                                <button type="submit" id="submitButton">
+                                    <span class="button-content">
+                                        <svg
+                                            class="heart-icon"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        >
+                                            <path
+                                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                                            ></path>
+                                        </svg>
+                                        Donar
+                                    </span>
+                                </button>
+                                <div class="mp-flex">
+                                    <img
+                                        src="/public/static/img/logo-mercadopago.png"
+                                        alt="logo-mercadopago"
+                                        class="mp-logo"
+                                    />
+                                </div>
+                                <div
+                                    id="successMessage"
+                                    style="margin-top: 12px; color: #38a169"
+                                ></div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <p>
+                            Powered By:
+                            <a href="https://github.com/Flaky07">Flaky</a>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Audio Selector -->
+                <div class="audio-selector">
+                    <input
+                        type="text"
+                        id="soundSearch"
+                        placeholder="Buscar audio..."
+                        class="input-color --input-color-mod"
+                    />
+                    <div id="soundResults"></div>
+                    <input type="hidden" id="sound_url" />
+                </div>
+            </div>
         </div>
 
-        <div class="card-body">
-          <form id="donationForm">
-            <div class="form-group">
-              <label for="monto">Monto (ARS)</label>
-              <div class="input-wrapper">
-                <span class="currency-symbol">$</span>
-                <input type="number" id="monto" name="monto" required min="500" placeholder="500" />
-              </div>
-              <small>Ingresa el monto</small>
-              <div class="error-message" id="amountError"></div>
-            </div>
+        <script>
+            const gifSearch = document.getElementById("gifSearch");
+            const gifResults = document.getElementById("gifResults");
+            const gifUrlInput = document.getElementById("gif_url");
 
-            <div class="form-group">
-              <label for="usuario">Usuario</label>
-              <input type="text" id="usuario" name="usuario" placeholder="anonimo" />
-              <small>Deja vacío para donar como anónimo</small>
-            </div>
+            async function buscarGifs(query = "league of legends") {
+                const apiKey = window.ENV.GIF_API;
+                const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(
+                    query
+                )}&limit=8`;
+                const res = await fetch(url);
+                const json = await res.json();
+                mostrarResultadosGif(json.data);
+            }
 
-            <div class="form-group">
-              <label for="mensaje">Mensaje</label>
-              <input type="text" id="mensaje" name="mensaje" required maxlength="35" placeholder="mensaje..." />
-              <small>El mensaje será mostrado en el stream</small>
-            </div>
+            function mostrarResultadosGif(gifs) {
+                gifResults.innerHTML = "";
+                gifs.forEach((gif) => {
+                    const img = document.createElement("img");
+                    img.src = gif.images.fixed_height_small.url;
+                    img.alt = "gif";
+                    img.onclick = () => {
+                        gifUrlInput.value = gif.images.original.url;
+                        document
+                            .querySelectorAll("#gifResults img")
+                            .forEach((i) => i.classList.remove("selected"));
+                        img.classList.add("selected");
+                    };
+                    gifResults.appendChild(img);
+                });
+            }
 
-            <button type="submit" id="submitButton">
-              <span class="button-content">
-                <svg class="heart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                </svg>
-                Donar
-              </span>
-            </button>
+            const soundSearch = document.getElementById("soundSearch");
+            const soundResults = document.getElementById("soundResults");
+            const soundUrlInput = document.getElementById("sound_url");
 
-            <div id="successMessage" style="margin-top: 12px; color: #38a169;"></div>
-          </form>
-        </div>
+            async function buscarSonidos(query = "anime") {
+                try {
+                    console.log("Lanzando búsqueda con query:", query);
+                    const res = await fetch(
+                        `${
+                            window.ENV.BACKEND_URL
+                        }/api/myinstants?q=${encodeURIComponent(query)}`
+                    );
+                    if (!res.ok) throw new Error("Error en backend");
+                    const json = await res.json();
+                    console.log("Resultados recibidos:", json.data);
+                    mostrarResultadosSonidos(json.data);
+                } catch (err) {
+                    console.error("Error al buscar sonidos:", err);
+                }
+            }
 
-        <div class="card-footer">
-          <p>Powered By: <a href="https://github.com/Flaky07">Flaky</a></p>
-        </div>
-      </div>
+            function mostrarResultadosSonidos(sonidos) {
+                soundResults.innerHTML = "";
+                sonidos.slice(0, 5).forEach((sonido, idx) => {
+                    const wrapper = document.createElement("div");
+                    wrapper.classList.add("sound-wrapper");
 
-      <!-- Audio Selector -->
-      <div class="audio-selector">
-        <input type="text" id="soundSearch" placeholder="Buscar audio..." />
-        <div id="soundResults"></div>
-        <input type="hidden" id="sound_url" />
-      </div>
-    </div>
-  </div>
+                    const iframe = document.createElement("iframe");
+                    iframe.src = `https://www.myinstants.com/instant/${sonido.id}/embed/`;
+                    iframe.width = "110";
+                    iframe.height = "200";
+                    iframe.frameBorder = "0";
+                    iframe.scrolling = "no";
 
-  <script>
-    const gifSearch = document.getElementById("gifSearch");
-    const gifResults = document.getElementById("gifResults");
-    const gifUrlInput = document.getElementById("gif_url");
-  
-    async function buscarGifs(query = "league of legends") {
-      const apiKey = window.ENV.GIF_API;
-      const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=8`;
-      const res = await fetch(url);
-      const json = await res.json();
-      mostrarResultadosGif(json.data);
-    }
-  
-    function mostrarResultadosGif(gifs) {
-      gifResults.innerHTML = "";
-      gifs.forEach(gif => {
-        const img = document.createElement("img");
-        img.src = gif.images.fixed_height_small.url;
-        img.alt = "gif";
-        img.onclick = () => {
-          gifUrlInput.value = gif.images.original.url;
-          document.querySelectorAll("#gifResults img").forEach(i => i.classList.remove("selected"));
-          img.classList.add("selected");
-        };
-        gifResults.appendChild(img);
-      });
-    }
-  
-    const soundSearch = document.getElementById("soundSearch");
-    const soundResults = document.getElementById("soundResults");
-    const soundUrlInput = document.getElementById("sound_url");
-  
-    async function buscarSonidos(query = "anime") {
-      try {
-        console.log("Lanzando búsqueda con query:", query);
-        const res = await fetch(`${window.ENV.BACKEND_URL}/api/myinstants?q=${encodeURIComponent(query)}`);
-        if (!res.ok) throw new Error("Error en backend");
-        const json = await res.json();
-        console.log("Resultados recibidos:", json.data);
-        mostrarResultadosSonidos(json.data);
-      } catch (err) {
-        console.error("Error al buscar sonidos:", err);
-      }
-    }
-  
-    function mostrarResultadosSonidos(sonidos) {
-      soundResults.innerHTML = "";
-      sonidos.slice(0, 5).forEach((sonido, idx) => {
-        const wrapper = document.createElement("div");
-        wrapper.classList.add("sound-wrapper");
-  
-        const iframe = document.createElement("iframe");
-        iframe.src = `https://www.myinstants.com/instant/${sonido.id}/embed/`;
-        iframe.width = "110";
-        iframe.height = "200";
-        iframe.frameBorder = "0";
-        iframe.scrolling = "no";
-  
-        const radio = document.createElement("input");
-        radio.type = "radio";
-        radio.name = "soundOption";
-        radio.value = sonido.mp3;
-  
-        radio.onclick = () => {
-          soundUrlInput.value = sonido.mp3;
-          document.querySelectorAll(".sound-wrapper").forEach(i => i.classList.remove("selected"));
-          wrapper.classList.add("selected");
-        };
-  
-        wrapper.onclick = () => {
-          radio.click();
-        };
-  
-        wrapper.appendChild(iframe);
-        wrapper.appendChild(radio);
-        soundResults.appendChild(wrapper);
-      });
-    }
-  
-    document.addEventListener("DOMContentLoaded", () => {
-      buscarGifs();
-      buscarSonidos(); // carga inicial
-    });
-  
-    gifSearch.addEventListener("input", () => {
-      const query = gifSearch.value.trim();
-      if (query.length >= 2) buscarGifs(query);
-    });
-  
-    soundSearch.addEventListener("input", () => {
-      const query = soundSearch.value.trim();
-      console.log("Buscando audio con:", query);
-      if (query.length >= 2) {
-        buscarSonidos(query);
-      } else {
-        buscarSonidos("anime"); // fallback si está vacío o tiene 1 letra
-      }
-    });
-  
-    document.getElementById("donationForm").addEventListener("submit", function (event) {
-      event.preventDefault();
-      const monto = document.getElementById("monto").value;
-      let usuario = document.getElementById("usuario").value;
-      if (!usuario.trim()) usuario = "anonimo";
-      const mensaje = document.getElementById("mensaje").value;
-      const gif_url = document.getElementById("gif_url").value;
-      const sonido_url = document.getElementById("sound_url").value;
-  
-      const submitButton = document.getElementById("submitButton");
-      const successDiv = document.getElementById("successMessage");
-  
-      submitButton.disabled = true;
-      successDiv.textContent = "";
-  
-      fetch(`${window.ENV.BACKEND_URL}/crear-donacion`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ monto, usuario, mensaje, gif_url, sonido_url })
-      })
-        .then(res => {
-          if (!res.ok) throw new Error("Error al enviar la donación");
-          return res.json();
-        })
-        .then(data => {
-          if (data.url) {
-            window.location.href = data.url;
-          } else {
-            successDiv.textContent = data.mensaje || "¡Gracias por tu donación!";
-          }
-        })
-        .catch(err => {
-          successDiv.textContent = "Ocurrió un error. Intenta nuevamente.";
-        })
-        .finally(() => {
-          submitButton.disabled = false;
-        });
-    });
-  </script>  
-</body>
+                    const radio = document.createElement("input");
+                    radio.type = "radio";
+                    radio.name = "soundOption";
+                    radio.value = sonido.mp3;
+
+                    radio.onclick = () => {
+                        soundUrlInput.value = sonido.mp3;
+                        document
+                            .querySelectorAll(".sound-wrapper")
+                            .forEach((i) => i.classList.remove("selected"));
+                        wrapper.classList.add("selected");
+                    };
+
+                    wrapper.onclick = () => {
+                        radio.click();
+                    };
+
+                    wrapper.appendChild(iframe);
+                    wrapper.appendChild(radio);
+                    soundResults.appendChild(wrapper);
+                });
+            }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                buscarGifs();
+                buscarSonidos(); // carga inicial
+            });
+
+            gifSearch.addEventListener("input", () => {
+                const query = gifSearch.value.trim();
+                if (query.length >= 2) buscarGifs(query);
+            });
+
+            soundSearch.addEventListener("input", () => {
+                const query = soundSearch.value.trim();
+                console.log("Buscando audio con:", query);
+                if (query.length >= 2) {
+                    buscarSonidos(query);
+                } else {
+                    buscarSonidos("anime"); // fallback si está vacío o tiene 1 letra
+                }
+            });
+
+            document
+                .getElementById("donationForm")
+                .addEventListener("submit", function (event) {
+                    event.preventDefault();
+                    const monto = document.getElementById("monto").value;
+                    let usuario = document.getElementById("usuario").value;
+                    if (!usuario.trim()) usuario = "anonimo";
+                    const mensaje = document.getElementById("mensaje").value;
+                    const gif_url = document.getElementById("gif_url").value;
+                    const sonido_url =
+                        document.getElementById("sound_url").value;
+
+                    const submitButton =
+                        document.getElementById("submitButton");
+                    const successDiv =
+                        document.getElementById("successMessage");
+
+                    submitButton.disabled = true;
+                    successDiv.textContent = "";
+
+                    fetch(`${window.ENV.BACKEND_URL}/crear-donacion`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            monto,
+                            usuario,
+                            mensaje,
+                            gif_url,
+                            sonido_url,
+                        }),
+                    })
+                        .then((res) => {
+                            if (!res.ok)
+                                throw new Error("Error al enviar la donación");
+                            return res.json();
+                        })
+                        .then((data) => {
+                            if (data.url) {
+                                window.location.href = data.url;
+                            } else {
+                                successDiv.textContent =
+                                    data.mensaje || "¡Gracias por tu donación!";
+                            }
+                        })
+                        .catch((err) => {
+                            successDiv.textContent =
+                                "Ocurrió un error. Intenta nuevamente.";
+                        })
+                        .finally(() => {
+                            submitButton.disabled = false;
+                        });
+                });
+        </script>
+    </body>
 </html>
