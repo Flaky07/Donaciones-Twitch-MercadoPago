@@ -17,7 +17,7 @@ body {
     background-color: #242325;
     color: white;
     line-height: 1.6;
-    background-image: url(/public/static/img/fondo.png);
+    background-image: url(../img/fondo.png);
     background-size: cover;
     background-repeat: no-repeat;
 }
@@ -67,10 +67,10 @@ body {
     border-color: #6642a9;
 }
 
-#gifResults img,
+#gifResults,
 #soundResults {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 10px;
     margin-top: 10px;
 }
@@ -78,38 +78,85 @@ body {
 #gifResults img,
 .sound-wrapper {
     width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
     border-radius: 6px;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    max-width: 100%;
-    height: auto;
 }
 
 #gifResults img:hover,
 .sound-wrapper:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 25px rgba(145, 71, 255, 0.5);
+    border-color: #9146ff;
+    border: 2px solid #9146ff;
 }
 
 #gifResults img.selected,
 .sound-wrapper.selected {
-    border: 3px solid #6366f1;
+    border: 3px solid #9146ff;
     border-radius: 10px;
     padding: 4px;
-    background-color: #1f1f1f;
 }
 
 .sound-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    justify-content: space-between;
+    background: linear-gradient(145deg, #1b0a37, #26114d);
+    border: 2px solid #402178;
+    border-radius: 16px;
+    padding: 12px;
+    transition: all 0.25s ease-in-out;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
 }
 
+.sound-wrapper:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(145, 71, 255, 0.5);
+    border-color: #9146ff;
+}
+
+/* El iframe de MyInstants embebido */
+.sound-wrapper iframe {
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+    height: 180px;
+    margin-bottom: 8px;
+}
+
+/* Estilo del input radio oculto visualmente */
 .sound-wrapper input[type="radio"] {
-    accent-color: #6366f1;
-    transform: scale(1.1);
-    cursor: pointer;
+    position: absolute;
+    opacity: 0;
+}
+
+/* Indicador visual de selección */
+.sound-wrapper.selected {
+    border: 3px solid #6366f1;
+    background: #1a0a2e;
+}
+
+/* Bonus: animación de entrada */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sound-wrapper {
+    animation: fadeInUp 0.3s ease both;
 }
 
 .donation-header {
@@ -149,6 +196,7 @@ body {
 
 .card-header {
     padding: 5px;
+    text-align: center;
     border-bottom: 1px solid #e2e8f015;
 }
 
@@ -266,7 +314,7 @@ button {
     border-radius: 6px;
     font-size: 16px;
     font-weight: 500;
-    transition: background-color 0.2s, transform 0.2s;
+    transition: background-color 0.1s, transform 0.2s;
     position: relative;
     z-index: 1;
     cursor: pointer;
@@ -379,10 +427,27 @@ button:disabled:hover {
 }
 
 /* Efecto adicional al hacer hover */
-.logo-twitch:hover {
+.dontation-header-mod:hover img {
     animation: none; /* Detiene la animación en hover */
     transform: scale(1.2) rotate(5deg);
     filter: drop-shadow(0 0 5px #9147ff); /* Efecto de brillo violeta */
+}
+
+.dontation-header-mod:hover {
+    filter: drop-shadow(0 0 5px #9147ff);
+}
+
+/*OCULTAR LAS FLECHAS (SPINNERS) DEL INPUT NUMBER*/
+/* Oculta las flechas en Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Oculta las flechas en Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
 }
 
 @media (max-width: 1024px) {
@@ -402,5 +467,19 @@ button:disabled:hover {
     body {
         overflow-y: auto;
         width: 100%;
+    }
+
+    .dontation-header-mod img {
+        transform: scale(1.1);
+        max-width: 35px;
+    }
+
+    .dontation-header-mod h1 {
+        font-size: 35px;
+    }
+
+    h2 {
+        margin-right: 15px;
+        font-size: 10px;
     }
 }

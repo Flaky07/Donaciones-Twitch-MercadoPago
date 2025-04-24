@@ -27,7 +27,7 @@
                         <div class="dontation-header-mod">
                             <h1>DONACIONES</h1>
                             <img
-                                src="/public/static/img/twitch-logo.png"
+                                src="public/static/img/twitch-logo.png"
                                 alt="logo-twitch"
                                 class="logo-twitch"
                             />
@@ -36,7 +36,7 @@
                     </div>
                     <div class="separator">
                         <div class="card-header">
-                            <h2>Realizar Donación</h2>
+                            <h2>REALIZAR DONACIÓN:</h2>
                         </div>
 
                         <div class="card-body">
@@ -68,7 +68,7 @@
                                         type="text"
                                         id="usuario"
                                         name="usuario"
-                                        placeholder="anonimo"
+                                        placeholder="Anonimo"
                                         class="input-color"
                                     />
                                     <small
@@ -85,7 +85,7 @@
                                         name="mensaje"
                                         required
                                         maxlength="35"
-                                        placeholder="mensaje..."
+                                        placeholder="Mensaje.."
                                         class="input-color"
                                     />
                                     <small
@@ -154,10 +154,10 @@
             const gifUrlInput = document.getElementById("gif_url");
 
             async function buscarGifs(query = "league of legends") {
-                const apiKey = window.ENV.GIF_API;
+                const apiKey = "UxrktEBn6jTO9FCqEOev3DmCzHWlGxwj";
                 const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(
                     query
-                )}&limit=8`;
+                )}&limit=10`;
                 const res = await fetch(url);
                 const json = await res.json();
                 mostrarResultadosGif(json.data);
@@ -178,6 +178,9 @@
                     };
                     gifResults.appendChild(img);
                 });
+
+                // Guardar resultados en localStorage
+                localStorage.setItem("gifResults", JSON.stringify(gifs));
             }
 
             const soundSearch = document.getElementById("soundSearch");
@@ -188,9 +191,9 @@
                 try {
                     console.log("Lanzando búsqueda con query:", query);
                     const res = await fetch(
-                        `${
-                            window.ENV.BACKEND_URL
-                        }/api/myinstants?q=${encodeURIComponent(query)}`
+                        `http://localhost:5000/api/myinstants?q=${encodeURIComponent(
+                            query
+                        )}`
                     );
                     if (!res.ok) throw new Error("Error en backend");
                     const json = await res.json();
@@ -203,7 +206,7 @@
 
             function mostrarResultadosSonidos(sonidos) {
                 soundResults.innerHTML = "";
-                sonidos.slice(0, 5).forEach((sonido, idx) => {
+                sonidos.slice(0, 6).forEach((sonido, idx) => {
                     const wrapper = document.createElement("div");
                     wrapper.classList.add("sound-wrapper");
 
@@ -235,16 +238,43 @@
                     wrapper.appendChild(radio);
                     soundResults.appendChild(wrapper);
                 });
+
+                // Guardar en cache
+                localStorage.setItem("soundResults", JSON.stringify(sonidos));
             }
 
             document.addEventListener("DOMContentLoaded", () => {
-                buscarGifs();
-                buscarSonidos(); // carga inicial
+                const cachedGifs = localStorage.getItem("gifResults");
+                if (cachedGifs) {
+                    try {
+                        const gifs = JSON.parse(cachedGifs);
+                        mostrarResultadosGif(gifs);
+                    } catch (e) {
+                        console.warn("GIFs cache corruptos:", e);
+                    }
+                } else {
+                    buscarGifs(); // carga inicial
+                }
+
+                const cachedSounds = localStorage.getItem("soundResults");
+                if (cachedSounds) {
+                    try {
+                        const sonidos = JSON.parse(cachedSounds);
+                        mostrarResultadosSonidos(sonidos);
+                    } catch (e) {
+                        console.warn("Audios cache corruptos:", e);
+                    }
+                } else {
+                    buscarSonidos(); // carga inicial
+                }
             });
 
-            gifSearch.addEventListener("input", () => {
-                const query = gifSearch.value.trim();
-                if (query.length >= 2) buscarGifs(query);
+            gifSearch.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") {
+                    e.preventDefault(); // Previene que el form se envíe si está dentro de uno
+                    const query = gifSearch.value.trim();
+                    if (query.length >= 2) buscarGifs(query);
+                }
             });
 
             soundSearch.addEventListener("input", () => {
@@ -277,7 +307,7 @@
                     submitButton.disabled = true;
                     successDiv.textContent = "";
 
-                    fetch(`${window.ENV.BACKEND_URL}/crear-donacion`, {
+                    fetch(`http://localhost:5000/crear-donacion`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
